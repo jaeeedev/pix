@@ -1,7 +1,17 @@
-import React from "react";
+import Header from "./Header";
+import Footer from "./Footer";
+import { Outlet } from "react-router-dom";
 
 const GlobalLayout = () => {
-  return <div>GlobalLayout</div>;
+  return (
+    <div className="h-screen">
+      <Header />
+      <div className="h-full">
+        <Outlet />
+      </div>
+      <Footer />
+    </div>
+  );
 };
 
 export default GlobalLayout;
