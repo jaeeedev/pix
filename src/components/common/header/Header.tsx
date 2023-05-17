@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
-import ContentContainer from "./ContentContainer";
+import ContentContainer from "../ContentContainer";
+import HeaderMenuList from "./HeaderMenuList";
+
 import { BsFillCartFill, BsThreeDotsVertical } from "react-icons/bs";
-import HeaderMenuList from "./header/HeaderMenuList";
+import HeaderMenuBoxList from "./HeaderMenuBoxList";
+import { useState } from "react";
 
 const Header = () => {
+  const [open, setOpen] = useState(false);
   return (
     <div className="sticky top-0 bg-slate-100">
       <ContentContainer>
@@ -17,9 +21,7 @@ const Header = () => {
               <HeaderMenuList>
                 <Link to="/login">로그인</Link>
               </HeaderMenuList>
-
               <HeaderMenuList>로그아웃</HeaderMenuList>
-
               <HeaderMenuList>
                 <Link to="/signup">회원가입</Link>
               </HeaderMenuList>
@@ -30,9 +32,14 @@ const Header = () => {
                 </Link>
               </HeaderMenuList>
 
-              <HeaderMenuList reverse>
-                <BsThreeDotsVertical />
-              </HeaderMenuList>
+              <div className="relative">
+                <HeaderMenuList reverse>
+                  <BsThreeDotsVertical
+                    onClick={() => setOpen((prev) => !prev)}
+                  />
+                </HeaderMenuList>
+                {open && <HeaderMenuBoxList setOpen={setOpen} />}
+              </div>
             </ul>
           </nav>
         </div>

@@ -1,4 +1,3 @@
-import React from "react";
 import ContentContainer from "../../components/common/ContentContainer";
 
 const MainPage = () => {

@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 
 type Props = {
@@ -14,7 +14,6 @@ type Props = {
  *  */
 const HeaderMenuList = ({ children, ...props }: Props) => {
   const { always, reverse } = props;
-  console.log(props);
 
   return (
     <li
