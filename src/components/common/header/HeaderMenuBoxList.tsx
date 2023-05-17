@@ -26,10 +26,10 @@ const HeaderMenuBoxList = ({ setOpen }: Props) => {
           <Link to="/login">로그인</Link>
         </BoxLi>
         <BoxLi>
-          <Link to="/login">로그아웃</Link>
+          <Link to="/signup">회원가입</Link>
         </BoxLi>
         <BoxLi>
-          <Link to="/login">마이페이지</Link>
+          <Link to="/mypage">마이페이지</Link>
         </BoxLi>
       </ul>
     </div>
