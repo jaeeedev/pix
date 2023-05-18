@@ -1,6 +1,6 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import React, { useEffect } from "react";
-import authAtom from "../../recoil/auth/AuthAtom";
+import { useEffect } from "react";
+import authAtom from "../../recoil/auth/authAtom";
 import { useSetRecoilState } from "recoil";
 
 const AuthObserver = () => {
@@ -21,7 +21,7 @@ const AuthObserver = () => {
     });
   }, [auth, setLoginStatus]);
 
-  return <div>AuthObserver</div>;
+  return <div />;
 };
 
 export default AuthObserver;

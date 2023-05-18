@@ -33,7 +33,7 @@ const Header = () => {
           <Link to="/">pix</Link>
           <nav className="flex justify-between  grow">
             <div>
-              <Link to="/">products</Link>
+              <Link to="/products">products</Link>
             </div>
             <ul className="flex items-center gap-4 ">
               {!isLogin && (

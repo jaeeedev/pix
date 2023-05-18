@@ -6,6 +6,7 @@ import GlobalModal from "./components/common/modal/GlobalModal";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
 const SignupPage = lazy(() => import("./pages/auth/SignupPage"));
+const ProductsPage = lazy(() => import("./pages/products/ProductsPage"));
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: "/signup",
         element: <SignupPage />,
+      },
+      {
+        path: "/products",
+        element: <ProductsPage />,
       },
       {
         path: "*",
