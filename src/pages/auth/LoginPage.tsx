@@ -8,11 +8,17 @@ import AuthBackground from "../../components/auth/AuthBackground";
 import { SyntheticEvent, useCallback } from "react";
 import useGlobalModal from "../../components/common/modal/useGlobalModal";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useRecoilValue } from "recoil";
+import authAtom from "../../recoil/auth/authAtom";
 
 const emailRegex = "[a-zA-Z0-9]+@[a-zA-Z]+.[a-zA-Z]{2,}";
 const LoginPage = () => {
   const { setModal } = useGlobalModal();
   const navigate = useNavigate();
+
+  const { isLogin } = useRecoilValue(authAtom);
+
+  if (isLogin) navigate("/");
 
   const handleSubmit = useCallback(
     async (e: SyntheticEvent) => {
@@ -33,11 +39,14 @@ const LoginPage = () => {
 
         if (response) {
           setModal("로그인 되었습니다.");
-          navigate("/");
+          navigate("/", {
+            replace: true,
+          });
         }
       } catch (err) {
         console.log(err);
-        setModal("오류가 발생했습니다. 잠시 후 실행해주세요");
+        console.log(typeof err);
+        setModal("오류가 발생했습니다. /잠시 후 실행해주세요");
       }
     },
     [navigate, setModal]

@@ -5,6 +5,7 @@ type Props = {
   children: ReactNode;
   always?: boolean;
   reverse?: boolean;
+  onClick?: () => Promise<void>;
 };
 
 /**
@@ -23,6 +24,7 @@ const HeaderMenuList = ({ children, ...props }: Props) => {
         ${!!reverse && "block md:hidden"}
         `
       )}
+      {...props}
     >
       {children}
     </li>
