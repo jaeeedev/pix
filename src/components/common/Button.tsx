@@ -16,7 +16,6 @@ const Button = ({ children, ...props }: ButtonProps) => {
       className={twMerge(
         `px-8 py-4 bg-slate-500 text-white rounded-md ${!!full && "w-full"}`
       )}
-      {...props}
     >
       {children}
     </button>

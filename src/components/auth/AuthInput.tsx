@@ -3,6 +3,7 @@ const AuthInput = ({ ...props }) => {
     <div className="mb-4">
       <input
         type="text"
+        autoComplete="on"
         {...props}
         className="p-3 rounded-md w-full bg-slate-100"
       />

@@ -21,7 +21,7 @@ const LoginPage = () => {
           <AuthDeco />
           <div className="h-screen flex-1 md:flex md:justify-center md:items-center">
             <form
-              name="signup"
+              name="login"
               className="w-4/5 mx-auto py-8 lg:py-0"
               onSubmit={handleSubmit}
             >

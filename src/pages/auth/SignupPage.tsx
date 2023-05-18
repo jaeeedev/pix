@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthDeco from "../../components/auth/AuthDeco";
 import AuthInput from "../../components/auth/AuthInput";
 import ContentContainer from "../../components/common/ContentContainer";
@@ -6,12 +6,41 @@ import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/common/Button";
 import AuthBackground from "../../components/auth/AuthBackground";
 import { SyntheticEvent, useCallback } from "react";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import useGlobalModal from "../../components/common/modal/useGlobalModal";
 
 const emailRegex = "[a-zA-Z0-9]+@[a-zA-Z]+.[a-zA-Z]{2,}";
 const SignupPage = () => {
-  const handleSubmit = useCallback((e: SyntheticEvent) => {
-    e.preventDefault();
-  }, []);
+  const { setModal } = useGlobalModal();
+  const navigate = useNavigate();
+
+  const handleSubmit = useCallback(
+    async (e: SyntheticEvent) => {
+      e.preventDefault();
+
+      const auth = getAuth();
+
+      const formData = Object.fromEntries(
+        new FormData(e.target as HTMLFormElement)
+      ) as { [key: string]: string };
+
+      try {
+        const response = await createUserWithEmailAndPassword(
+          auth,
+          formData.email,
+          formData.password
+        );
+
+        if (response) {
+          setModal("회원가입 되었습니다.");
+          navigate("/");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [navigate, setModal]
+  );
 
   return (
     <>
@@ -23,7 +52,7 @@ const SignupPage = () => {
             <form
               name="signup"
               className="w-4/5 mx-auto py-8 lg:py-0"
-              onClick={handleSubmit}
+              onSubmit={handleSubmit}
             >
               <PageTitle>회원가입</PageTitle>
               <AuthInput
@@ -47,7 +76,7 @@ const SignupPage = () => {
                   이미 계정이 있으세요?
                 </Link>
               </div>
-              <Button full>로그인</Button>
+              <Button full>회원가입</Button>
             </form>
           </div>
         </div>

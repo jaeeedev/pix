@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import MainPage from "./pages/main/MainPage";
 import GlobalLayout from "./components/common/GlobalLayout";
 import { lazy } from "react";
+import GlobalModal from "./components/common/modal/GlobalModal";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
 const SignupPage = lazy(() => import("./pages/auth/SignupPage"));
@@ -9,7 +10,12 @@ const SignupPage = lazy(() => import("./pages/auth/SignupPage"));
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <GlobalLayout />,
+    element: (
+      <>
+        <GlobalLayout />
+        <GlobalModal />
+      </>
+    ),
     children: [
       {
         path: "/",
