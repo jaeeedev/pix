@@ -2,12 +2,30 @@ import { Link } from "react-router-dom";
 import Children from "../../../types/children";
 import { BiX } from "react-icons/bi";
 import { Dispatch, SetStateAction } from "react";
+import { useRecoilValue } from "recoil";
+import authAtom from "../../../recoil/auth/AuthAtom";
+import { getAuth, signOut } from "firebase/auth";
+import useGlobalModal from "../modal/useGlobalModal";
 
 type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 const HeaderMenuBoxList = ({ setOpen }: Props) => {
+  const auth = getAuth();
+  const { setModal } = useGlobalModal();
+  const { isLogin } = useRecoilValue(authAtom);
+
+  const logoutHandle = async () => {
+    try {
+      await signOut(auth);
+      setModal("로그아웃 되었습니다.");
+    } catch (err) {
+      console.log(err);
+      setModal("로그아웃에 실패했습니다. 잠시 후 다시 실행해주세요.");
+    }
+  };
+
   const closeBox = () => {
     setOpen(false);
   };
@@ -22,15 +40,22 @@ const HeaderMenuBoxList = ({ setOpen }: Props) => {
         <button className="absolute right-4 top-4" onClick={closeBox}>
           <BiX size={20} />
         </button>
-        <BoxLi>
-          <Link to="/login">로그인</Link>
-        </BoxLi>
+        {!isLogin && (
+          <BoxLi>
+            <Link to="/login">로그인</Link>
+          </BoxLi>
+        )}
         <BoxLi>
           <Link to="/signup">회원가입</Link>
         </BoxLi>
         <BoxLi>
           <Link to="/mypage">마이페이지</Link>
         </BoxLi>
+        {isLogin && (
+          <BoxLi>
+            <button onClick={logoutHandle}>로그아웃</button>
+          </BoxLi>
+        )}
       </ul>
     </div>
   );
