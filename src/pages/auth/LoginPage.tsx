@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthDeco from "../../components/auth/AuthDeco";
 import AuthInput from "../../components/auth/AuthInput";
 import ContentContainer from "../../components/common/ContentContainer";
@@ -6,12 +6,42 @@ import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/common/Button";
 import AuthBackground from "../../components/auth/AuthBackground";
 import { SyntheticEvent, useCallback } from "react";
+import useGlobalModal from "../../components/common/modal/useGlobalModal";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const emailRegex = "[a-zA-Z0-9]+@[a-zA-Z]+.[a-zA-Z]{2,}";
 const LoginPage = () => {
-  const handleSubmit = useCallback((e: SyntheticEvent) => {
-    e.preventDefault();
-  }, []);
+  const { setModal } = useGlobalModal();
+  const navigate = useNavigate();
+
+  const handleSubmit = useCallback(
+    async (e: SyntheticEvent) => {
+      e.preventDefault();
+
+      const auth = getAuth();
+
+      const formData = Object.fromEntries(
+        new FormData(e.target as HTMLFormElement)
+      ) as { [key: string]: string };
+
+      try {
+        const response = await signInWithEmailAndPassword(
+          auth,
+          formData.email,
+          formData.password
+        );
+
+        if (response) {
+          setModal("로그인 되었습니다.");
+          navigate("/");
+        }
+      } catch (err) {
+        console.log(err);
+        setModal("오류가 발생했습니다. 잠시 후 실행해주세요");
+      }
+    },
+    [navigate, setModal]
+  );
 
   return (
     <>
