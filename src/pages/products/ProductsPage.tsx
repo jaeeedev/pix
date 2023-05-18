@@ -9,7 +9,9 @@ const ProductsPage = () => {
   const getData = async () => {
     const test = await getDocs(collection(db, "products"));
 
-    console.log(test);
+    test.forEach((doc) => {
+      console.log(doc.data());
+    });
   };
 
   useEffect(() => {

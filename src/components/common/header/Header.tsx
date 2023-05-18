@@ -27,7 +27,7 @@ const Header = () => {
   };
 
   return (
-    <div className="sticky top-0 bg-slate-100">
+    <div className="sticky top-0 bg-slate-100 z-10">
       <ContentContainer>
         <div className="flex gap-16">
           <Link to="/">pix</Link>
