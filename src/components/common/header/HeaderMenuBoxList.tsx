@@ -14,7 +14,7 @@ type Props = {
 const HeaderMenuBoxList = ({ setOpen }: Props) => {
   const auth = getAuth();
   const { setModal } = useGlobalModal();
-  const { isLogin } = useRecoilValue(authAtom);
+  const { isLogin, isAdmin } = useRecoilValue(authAtom);
 
   const logoutHandle = async () => {
     try {
@@ -58,6 +58,11 @@ const HeaderMenuBoxList = ({ setOpen }: Props) => {
         {isLogin && (
           <BoxLi>
             <button onClick={logoutHandle}>로그아웃</button>
+          </BoxLi>
+        )}
+        {isLogin && isAdmin && (
+          <BoxLi>
+            <Link to="/admin">관리자 페이지</Link>
           </BoxLi>
         )}
       </ul>

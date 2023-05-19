@@ -2,7 +2,11 @@ import { Link } from "react-router-dom";
 import ContentContainer from "../ContentContainer";
 import HeaderMenuList from "./HeaderMenuList";
 
-import { BsFillCartFill, BsThreeDotsVertical } from "react-icons/bs";
+import {
+  BsFillCartFill,
+  BsThreeDotsVertical,
+  BsFillGearFill,
+} from "react-icons/bs";
 import HeaderMenuBoxList from "./HeaderMenuBoxList";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -14,7 +18,7 @@ const Header = () => {
   const auth = getAuth();
   const { setModal } = useGlobalModal();
   const [open, setOpen] = useState(false);
-  const { isLogin } = useRecoilValue(authAtom);
+  const { isLogin, isAdmin } = useRecoilValue(authAtom);
 
   const logoutHandle = async () => {
     try {
@@ -52,6 +56,14 @@ const Header = () => {
               {isLogin && (
                 <HeaderMenuList>
                   <Link to="/mypage">마이페이지</Link>
+                </HeaderMenuList>
+              )}
+
+              {isLogin && isAdmin && (
+                <HeaderMenuList>
+                  <Link to="/admin">
+                    <BsFillGearFill />
+                  </Link>
                 </HeaderMenuList>
               )}
 

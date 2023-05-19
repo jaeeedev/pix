@@ -5,7 +5,7 @@ import ContentContainer from "../../components/common/ContentContainer";
 import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/common/Button";
 import AuthBackground from "../../components/auth/AuthBackground";
-import { SyntheticEvent, useCallback } from "react";
+import { SyntheticEvent, useCallback, useEffect } from "react";
 import useGlobalModal from "../../components/common/modal/useGlobalModal";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useRecoilValue } from "recoil";
@@ -32,7 +32,9 @@ const LoginPage = () => {
 
   const { isLogin } = useRecoilValue(authAtom);
 
-  if (isLogin) navigate("/");
+  useEffect(() => {
+    if (isLogin) navigate("/");
+  }, [isLogin, navigate]);
 
   const handleSubmit = useCallback(
     async (e: SyntheticEvent) => {

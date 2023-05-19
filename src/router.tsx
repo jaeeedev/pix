@@ -3,13 +3,14 @@ import MainPage from "./pages/main/MainPage";
 import GlobalLayout from "./components/common/GlobalLayout";
 import { lazy } from "react";
 import GlobalModal from "./components/common/modal/GlobalModal";
+import LoginPage from "./pages/auth/LoginPage";
+import SignupPage from "./pages/auth/SignupPage";
 
-const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
-const SignupPage = lazy(() => import("./pages/auth/SignupPage"));
 const ProductsPage = lazy(() => import("./pages/products/ProductsPage"));
 const ProductDetailPage = lazy(
   () => import("./pages/products/ProductDetailPage")
 );
+const AdminPage = lazy(() => import("./pages/admin/AdminPage"));
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "/products/:id",
         element: <ProductDetailPage />,
+      },
+      {
+        path: "/admin",
+        element: <AdminPage />,
       },
 
       {
