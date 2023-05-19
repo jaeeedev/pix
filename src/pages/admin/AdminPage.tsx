@@ -1,5 +1,5 @@
 import ContentContainer from "../../components/common/ContentContainer";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import authAtom from "../../recoil/auth/authAtom";
 import { useEffect } from "react";
@@ -23,8 +23,6 @@ const AdminPage = () => {
       <PageTitle>관리자 페이지</PageTitle>
 
       <AdminSortSection />
-
-      <Outlet />
     </ContentContainer>
   );
 };

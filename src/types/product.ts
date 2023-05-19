@@ -5,5 +5,5 @@ export type TItem = {
   description: string;
   imageUrl: string;
   soldOut: boolean;
-  createdAt: string;
+  createdAt: Date;
 };
