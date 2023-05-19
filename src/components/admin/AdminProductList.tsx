@@ -4,6 +4,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import useProducts from "../../hooks/useProducts";
 import "../../aggrid.css";
+import dayjs from "dayjs";
 
 const AdminProductList = () => {
   const { items = [] } = useProducts();
@@ -11,7 +12,13 @@ const AdminProductList = () => {
     { field: "productId", flex: 1 },
     { field: "title", filter: true, flex: 1 },
     { field: "price", flex: 1 },
-    { field: "createdAt", flex: 1 },
+    {
+      field: "createdAt",
+      flex: 1,
+      valueFormatter: (param: any) => {
+        return dayjs(param.value).format("YYYY/MM/DD");
+      },
+    },
     { field: "soldOut", flex: 1 },
   ]);
 

@@ -7,10 +7,12 @@ const GlobalModal = () => {
   const modalState = useRecoilValue(globalModalAtom);
 
   useEffect(() => {
-    setVisible(true);
-    setTimeout(() => {
-      setVisible(false);
-    }, 1500);
+    if (modalState) {
+      setVisible(true);
+      setTimeout(() => {
+        setVisible(false);
+      }, 1500);
+    }
   }, [modalState]);
 
   return (

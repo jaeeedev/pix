@@ -9,7 +9,7 @@ const GlobalLayout = () => {
     <Suspense fallback={<div>Loading...</div>}>
       <div className="h-screen">
         <Header />
-        <div className="h-full">
+        <div className="min-h-full">
           <Outlet />
         </div>
         <Footer />

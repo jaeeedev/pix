@@ -1,18 +1,62 @@
-import { FormEvent, SyntheticEvent, useCallback } from "react";
+import {
+  FormEvent,
+  SyntheticEvent,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import Button from "../common/Button";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebase/initFirebase";
 import { TItem } from "../../types/product";
+import PageTitle from "../common/PageTitle";
 
 const Input = ({ ...props }) => {
-  return <input className="block bg-slate-100 p-3 rounded-md " {...props} />;
+  return (
+    <input
+      className="block w-full bg-slate-100 p-3 rounded-md mb-4"
+      {...props}
+    />
+  );
 };
-
+const Textarea = ({ ...props }) => {
+  return (
+    <textarea
+      className="block w-full  bg-slate-100 p-3 rounded-md mb-4"
+      {...props}
+    />
+  );
+};
 type InputData = {
   [key: string]: string | number | boolean;
 };
 
 const AddProductForm = () => {
+  const [openAddModal, setOpenAddModal] = useState(false);
+
+  const handleDragEnter = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
+  const handleDragOver = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
+  const handleDrop = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const { files } = e.dataTransfer;
+    // 나중에 메모리에서 지워야 하기 때문에
+    fileInputRef.current.file = files[0];
+
+    const imgUrl = URL.createObjectURL(files[0]);
+
+    console.log(imgUrl);
+  };
+
   const addData = async (params: TItem) => {
     try {
       const docRef = await addDoc(collection(db, "products"), params);
@@ -44,27 +88,71 @@ const AddProductForm = () => {
       .replace(/(\.*)\./g, "$1");
   };
 
+  const fileInputRef = useRef<any>(null);
+
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label>
-          상품명
-          <Input type="text" name="title" required />
-        </label>
-        <label>
-          상품 설명
-          <Input type="text" name="description" />
-        </label>
-        <label>
-          가격
-          <Input type="text" name="price" onInput={handleBlockText} required />
-        </label>
-        <label>
-          이미지
-          <Input type="text" name="imageUrl" required />
-        </label>
-        <Button>추가</Button>
-      </form>
+    <div className="w-full h-full">
+      <Button
+        onClick={() => {
+          setOpenAddModal(true);
+        }}
+      >
+        상품 추가하기
+      </Button>
+      {openAddModal && (
+        <form
+          onSubmit={handleSubmit}
+          className="p-4 rounded-md shadow-md fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white"
+        >
+          <PageTitle>상품 추가</PageTitle>
+          <button
+            className="absolute right-4 top-4"
+            onClick={() => {
+              setOpenAddModal(false);
+            }}
+          >
+            x
+          </button>
+          <label htmlFor="imageUrl">
+            상품 이미지
+            <div
+              className="bg-slate-100 w-full h-20 rounded-md"
+              onDrop={handleDrop}
+              onDragEnter={handleDragEnter}
+              onDragOver={handleDragOver}
+            >
+              <input
+                type="file"
+                ref={fileInputRef}
+                id="imageUrl"
+                name="imageUrl"
+                required
+                accept="image/*"
+                className="opacity-0 -z-1"
+              />
+            </div>
+          </label>
+          <label>
+            상품명
+            <Input type="text" name="title" required />
+          </label>
+          <label>
+            상품 설명
+            <Textarea type="text" name="description" />
+          </label>
+          <label>
+            가격
+            <Input
+              type="text"
+              name="price"
+              onInput={handleBlockText}
+              required
+            />
+          </label>
+          <div />
+          <Button full>추가</Button>
+        </form>
+      )}
     </div>
   );
 };
