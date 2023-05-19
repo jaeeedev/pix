@@ -55,14 +55,14 @@ const Header = () => {
                 </HeaderMenuList>
               )}
 
-              <HeaderMenuList always>
+              <HeaderMenuList always="on">
                 <Link to="/cart">
                   <BsFillCartFill />
                 </Link>
               </HeaderMenuList>
 
               <div className="relative">
-                <HeaderMenuList reverse>
+                <HeaderMenuList reverse="on">
                   <BsThreeDotsVertical
                     onClick={() => setOpen((prev) => !prev)}
                   />

@@ -7,6 +7,9 @@ import GlobalModal from "./components/common/modal/GlobalModal";
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
 const SignupPage = lazy(() => import("./pages/auth/SignupPage"));
 const ProductsPage = lazy(() => import("./pages/products/ProductsPage"));
+const ProductDetailPage = lazy(
+  () => import("./pages/products/ProductDetailPage")
+);
 
 const router = createBrowserRouter([
   {
@@ -34,6 +37,11 @@ const router = createBrowserRouter([
         path: "/products",
         element: <ProductsPage />,
       },
+      {
+        path: "/products/:id",
+        element: <ProductDetailPage />,
+      },
+
       {
         path: "*",
         element: <div>잘못된 접근이에요. ㅠㅠ</div>,
