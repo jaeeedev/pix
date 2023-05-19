@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthDeco from "../../components/auth/AuthDeco";
 import AuthInput from "../../components/auth/AuthInput";
 import ContentContainer from "../../components/common/ContentContainer";
@@ -6,12 +6,69 @@ import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/common/Button";
 import AuthBackground from "../../components/auth/AuthBackground";
 import { SyntheticEvent, useCallback } from "react";
+import useGlobalModal from "../../components/common/modal/useGlobalModal";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useRecoilValue } from "recoil";
+import authAtom from "../../recoil/auth/authAtom";
+import { FirebaseError } from "firebase/app";
+
+type LoginErrorCodeMessages = {
+  [key: string]: string;
+  default: string;
+};
 
 const emailRegex = "[a-zA-Z0-9]+@[a-zA-Z]+.[a-zA-Z]{2,}";
+const loginErrorCodeMessages: LoginErrorCodeMessages = {
+  "auth/user-not-found": "존재하지 않는 이메일입니다.",
+  "auth/wrong-password": "비밀번호가 일치하지 않습니다.",
+  "auth/weak-password": "비밀번호를 6글자 이상으로 지정해주세요.",
+  "auth/invalid-email": "이메일 형식이 올바르지 않습니다.",
+  default: "로그인에 실패했습니다. 잠시 후 실행해주세요",
+};
+
 const LoginPage = () => {
-  const handleSubmit = useCallback((e: SyntheticEvent) => {
-    e.preventDefault();
-  }, []);
+  const { setModal } = useGlobalModal();
+  const navigate = useNavigate();
+
+  const { isLogin } = useRecoilValue(authAtom);
+
+  if (isLogin) navigate("/");
+
+  const handleSubmit = useCallback(
+    async (e: SyntheticEvent) => {
+      e.preventDefault();
+
+      const auth = getAuth();
+
+      const formData = Object.fromEntries(
+        new FormData(e.target as HTMLFormElement)
+      ) as { [key: string]: string };
+
+      try {
+        const response = await signInWithEmailAndPassword(
+          auth,
+          formData.email,
+          formData.password
+        );
+
+        if (response) {
+          setModal("로그인 되었습니다.");
+          navigate("/", {
+            replace: true,
+          });
+        }
+      } catch (err) {
+        if (err instanceof FirebaseError && err.code) {
+          console.log(err);
+          setModal(
+            loginErrorCodeMessages[err.code] || loginErrorCodeMessages.default
+          );
+          // 동일한 오류가 또 발생하면 값은 안바뀌어서 모달이 다시안뜨네
+        }
+      }
+    },
+    [navigate, setModal]
+  );
 
   return (
     <>

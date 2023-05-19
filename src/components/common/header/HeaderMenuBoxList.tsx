@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import Children from "../../../types/children";
 import { BiX } from "react-icons/bi";
 import { Dispatch, SetStateAction } from "react";
-import { useRecoilValue } from "recoil";
-import authAtom from "../../../recoil/auth/AuthAtom";
 import { getAuth, signOut } from "firebase/auth";
+import { useRecoilValue } from "recoil";
 import useGlobalModal from "../modal/useGlobalModal";
+import authAtom from "../../../recoil/auth/authAtom";
 
 type Props = {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -45,12 +45,16 @@ const HeaderMenuBoxList = ({ setOpen }: Props) => {
             <Link to="/login">로그인</Link>
           </BoxLi>
         )}
-        <BoxLi>
-          <Link to="/signup">회원가입</Link>
-        </BoxLi>
-        <BoxLi>
-          <Link to="/mypage">마이페이지</Link>
-        </BoxLi>
+        {!isLogin && (
+          <BoxLi>
+            <Link to="/signup">회원가입</Link>
+          </BoxLi>
+        )}
+        {isLogin && (
+          <BoxLi>
+            <Link to="/mypage">마이페이지</Link>
+          </BoxLi>
+        )}
         {isLogin && (
           <BoxLi>
             <button onClick={logoutHandle}>로그아웃</button>
