@@ -2,7 +2,7 @@ import React from "react";
 import ContentContainer from "../../components/common/ContentContainer";
 
 const ProductDetailPage = () => {
-  return <ContentContainer>dd</ContentContainer>;
+  return <ContentContainer></ContentContainer>;
 };
 
 export default ProductDetailPage;

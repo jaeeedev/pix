@@ -4,6 +4,6 @@ export type TItem = {
   price: number;
   description: string;
   imageUrl: string;
-  soldout: boolean;
-  createdAt: Date;
+  soldOut: boolean;
+  createdAt: string;
 };

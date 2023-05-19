@@ -7,7 +7,8 @@ import Button from "../../components/common/Button";
 import AuthBackground from "../../components/auth/AuthBackground";
 import { SyntheticEvent, useCallback, useEffect } from "react";
 import useGlobalModal from "../../components/common/modal/useGlobalModal";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase/initFirebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRecoilValue } from "recoil";
 import authAtom from "../../recoil/auth/authAtom";
 import { FirebaseError } from "firebase/app";
@@ -39,8 +40,6 @@ const LoginPage = () => {
   const handleSubmit = useCallback(
     async (e: SyntheticEvent) => {
       e.preventDefault();
-
-      const auth = getAuth();
 
       const formData = Object.fromEntries(
         new FormData(e.target as HTMLFormElement)

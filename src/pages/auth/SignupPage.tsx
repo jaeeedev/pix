@@ -6,7 +6,8 @@ import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/common/Button";
 import AuthBackground from "../../components/auth/AuthBackground";
 import { SyntheticEvent, useCallback } from "react";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase/initFirebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import useGlobalModal from "../../components/common/modal/useGlobalModal";
 import authAtom from "../../recoil/auth/authAtom";
 import { useRecoilValue } from "recoil";
@@ -22,8 +23,6 @@ const SignupPage = () => {
   const handleSubmit = useCallback(
     async (e: SyntheticEvent) => {
       e.preventDefault();
-
-      const auth = getAuth();
 
       const formData = Object.fromEntries(
         new FormData(e.target as HTMLFormElement)

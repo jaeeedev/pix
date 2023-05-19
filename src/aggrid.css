@@ -1,0 +1,13 @@
+.ag-root-wrapper {
+  border: none;
+}
+
+.ag-root {
+  gap: 20px;
+}
+
+.ag-header {
+  background: #f1f5f9;
+  border-radius: 0.5rem;
+  border: none;
+}

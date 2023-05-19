@@ -46,7 +46,6 @@ const router = createBrowserRouter([
         path: "/admin",
         element: <AdminPage />,
       },
-
       {
         path: "*",
         element: <div>잘못된 접근이에요. ㅠㅠ</div>,
