@@ -1,8 +1,16 @@
+import { User } from "firebase/auth";
 import { atom } from "recoil";
 
-const authAtom = atom({
+type AuthDefault = {
+  userInfo: User | null;
+  isAdmin: boolean;
+  isLogin: boolean;
+};
+
+const authAtom = atom<AuthDefault>({
   key: "authAtom",
   default: {
+    userInfo: null,
     isAdmin: false,
     isLogin: false,
   },

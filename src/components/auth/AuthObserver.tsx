@@ -12,17 +12,20 @@ const AuthObserver = () => {
       if (user) {
         if (user.uid === import.meta.env.VITE_adminUid) {
           setLoginState({
+            userInfo: user,
             isLogin: true,
             isAdmin: true,
           });
         } else {
           setLoginState({
+            userInfo: user,
             isLogin: true,
             isAdmin: false,
           });
         }
       } else {
         setLoginState({
+          userInfo: null,
           isLogin: false,
           isAdmin: false,
         });
