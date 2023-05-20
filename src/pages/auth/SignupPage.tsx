@@ -6,7 +6,8 @@ import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/common/Button";
 import AuthBackground from "../../components/auth/AuthBackground";
 import { SyntheticEvent, useCallback } from "react";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase/initFirebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import useGlobalModal from "../../components/common/modal/useGlobalModal";
 import authAtom from "../../recoil/auth/authAtom";
 import { useRecoilValue } from "recoil";
@@ -23,8 +24,6 @@ const SignupPage = () => {
     async (e: SyntheticEvent) => {
       e.preventDefault();
 
-      const auth = getAuth();
-
       const formData = Object.fromEntries(
         new FormData(e.target as HTMLFormElement)
       ) as { [key: string]: string };
@@ -37,13 +36,22 @@ const SignupPage = () => {
         );
 
         if (response) {
-          setModal("회원가입 되었습니다.");
+          setModal({
+            open: true,
+            message: "회원가입 되었습니다.",
+          });
           navigate("/", {
             replace: true,
           });
         }
       } catch (err) {
         console.log(err);
+
+        // 회원가입 에러 모달로 출력
+        setModal({
+          open: true,
+          message: "회원가입에 실패했습니다.",
+        });
       }
     },
     [navigate, setModal]

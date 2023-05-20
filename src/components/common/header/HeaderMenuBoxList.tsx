@@ -14,15 +14,18 @@ type Props = {
 const HeaderMenuBoxList = ({ setOpen }: Props) => {
   const auth = getAuth();
   const { setModal } = useGlobalModal();
-  const { isLogin } = useRecoilValue(authAtom);
+  const { isLogin, isAdmin } = useRecoilValue(authAtom);
 
   const logoutHandle = async () => {
     try {
       await signOut(auth);
-      setModal("로그아웃 되었습니다.");
+      setModal({ open: true, message: "로그아웃 되었습니다." });
     } catch (err) {
       console.log(err);
-      setModal("로그아웃에 실패했습니다. 잠시 후 다시 실행해주세요.");
+      setModal({
+        open: true,
+        message: "로그아웃에 실패했습니다. 잠시 후 다시 실행해주세요.",
+      });
     }
   };
 
@@ -58,6 +61,11 @@ const HeaderMenuBoxList = ({ setOpen }: Props) => {
         {isLogin && (
           <BoxLi>
             <button onClick={logoutHandle}>로그아웃</button>
+          </BoxLi>
+        )}
+        {isLogin && isAdmin && (
+          <BoxLi>
+            <Link to="/admin">관리자 페이지</Link>
           </BoxLi>
         )}
       </ul>

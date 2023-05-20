@@ -1,25 +1,34 @@
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import authAtom from "../../recoil/auth/authAtom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
+import { auth } from "../../firebase/initFirebase";
 
 const AuthObserver = () => {
-  const auth = getAuth();
-  const setLoginStatus = useSetRecoilState(authAtom);
+  const [loginState, setLoginState] = useRecoilState(authAtom);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setLoginStatus({
-          isLogin: true,
-        });
+        if (user.uid === import.meta.env.VITE_adminUid) {
+          setLoginState({
+            isLogin: true,
+            isAdmin: true,
+          });
+        } else {
+          setLoginState({
+            isLogin: true,
+            isAdmin: false,
+          });
+        }
       } else {
-        setLoginStatus({
+        setLoginState({
           isLogin: false,
+          isAdmin: false,
         });
       }
     });
-  }, [auth, setLoginStatus]);
+  }, [setLoginState]);
 
   return <div />;
 };

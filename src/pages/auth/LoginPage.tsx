@@ -5,9 +5,10 @@ import ContentContainer from "../../components/common/ContentContainer";
 import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/common/Button";
 import AuthBackground from "../../components/auth/AuthBackground";
-import { SyntheticEvent, useCallback } from "react";
+import { SyntheticEvent, useCallback, useEffect } from "react";
 import useGlobalModal from "../../components/common/modal/useGlobalModal";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase/initFirebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRecoilValue } from "recoil";
 import authAtom from "../../recoil/auth/authAtom";
 import { FirebaseError } from "firebase/app";
@@ -32,13 +33,13 @@ const LoginPage = () => {
 
   const { isLogin } = useRecoilValue(authAtom);
 
-  if (isLogin) navigate("/");
+  useEffect(() => {
+    if (isLogin) navigate("/");
+  }, [isLogin, navigate]);
 
   const handleSubmit = useCallback(
     async (e: SyntheticEvent) => {
       e.preventDefault();
-
-      const auth = getAuth();
 
       const formData = Object.fromEntries(
         new FormData(e.target as HTMLFormElement)
@@ -52,7 +53,10 @@ const LoginPage = () => {
         );
 
         if (response) {
-          setModal("로그인 되었습니다.");
+          setModal({
+            open: true,
+            message: "로그인 되었습니다.",
+          });
           navigate("/", {
             replace: true,
           });
@@ -60,10 +64,12 @@ const LoginPage = () => {
       } catch (err) {
         if (err instanceof FirebaseError && err.code) {
           console.log(err);
-          setModal(
-            loginErrorCodeMessages[err.code] || loginErrorCodeMessages.default
-          );
-          // 동일한 오류가 또 발생하면 값은 안바뀌어서 모달이 다시안뜨네
+          setModal({
+            open: true,
+            message:
+              loginErrorCodeMessages[err.code] ||
+              loginErrorCodeMessages.default,
+          });
         }
       }
     },
