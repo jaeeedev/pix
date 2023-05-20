@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { TItem } from "../../types/product";
 import authAtom from "../../recoil/auth/authAtom";
 import { useRecoilValue } from "recoil";
@@ -38,10 +38,7 @@ const ProductInfo = ({ currentData, currentParam }: Props) => {
 
   const addCart = async () => {
     if (!userInfo || !isLogin) {
-      setModal({
-        open: true,
-        message: "로그인 후 이용해주세요.",
-      });
+      setModal("로그인 후 이용해주세요.");
       return;
     }
 
@@ -62,10 +59,7 @@ const ProductInfo = ({ currentData, currentParam }: Props) => {
           count: increment(count),
         });
 
-        setModal({
-          open: true,
-          message: "상품이 장바구니에 추가되었습니다.",
-        });
+        setModal("상품이 장바구니에 추가되었습니다.");
       } catch (err) {
         console.log(err);
       }
@@ -79,10 +73,43 @@ const ProductInfo = ({ currentData, currentParam }: Props) => {
 
         console.log(response);
         if (response) {
-          setModal({
-            open: true,
-            message: "상품이 장바구니에 추가되었습니다.",
-          });
+          setModal("상품이 장바구니에 추가되었습니다.");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
+  const addWish = async () => {
+    if (!userInfo || !isLogin) {
+      setModal("로그인 후 이용해주세요.");
+      return;
+    }
+
+    const wishRef = doc(db, "wish", userInfo.uid);
+    const wishQuery = query(
+      collection(db, "wish", userInfo.uid, "items"),
+      where("param", "==", currentParam)
+    );
+
+    const wishSnapshot = await getDocs(wishQuery);
+    const isExist = wishSnapshot.docs.length !== 0;
+
+    if (isExist) {
+      setModal("이미 담은 상품입니다.");
+
+      return;
+    } else {
+      try {
+        const response = await addDoc(collection(wishRef, "items"), {
+          ...currentData,
+          param: currentParam,
+        });
+
+        console.log(response);
+        if (response) {
+          setModal("상품이 위시리스트에 추가되었습니다.");
         }
       } catch (err) {
         console.log(err);
@@ -113,7 +140,10 @@ const ProductInfo = ({ currentData, currentParam }: Props) => {
         </div>
 
         <div className="flex gap-4">
-          <button className="flex-1 p-4 border-solid border border-slate-200 rounded-md active:bg-slate-200">
+          <button
+            className="flex-1 p-4 border-solid border border-slate-200 rounded-md active:bg-slate-200"
+            onClick={addWish}
+          >
             wish
           </button>
           <button

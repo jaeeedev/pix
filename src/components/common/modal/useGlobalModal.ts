@@ -3,8 +3,16 @@ import { useSetRecoilState } from "recoil";
 
 const useGlobalModal = () => {
   const setModalState = useSetRecoilState(globalModalAtom);
+
+  const setMessage = (message: string) => {
+    return setModalState({
+      open: true,
+      message,
+    });
+  };
+
   return {
-    setModal: setModalState,
+    setModal: setMessage,
   };
 };
 

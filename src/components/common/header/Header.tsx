@@ -23,16 +23,10 @@ const Header = () => {
   const logoutHandle = async () => {
     try {
       await signOut(auth);
-      setModal({
-        open: true,
-        message: "로그아웃 되었습니다.",
-      });
+      setModal("로그아웃 되었습니다.");
     } catch (err) {
       console.log(err);
-      setModal({
-        open: true,
-        message: "로그아웃에 실패했습니다. 잠시 후 다시 실행해주세요.",
-      });
+      setModal("로그아웃에 실패했습니다. 잠시 후 다시 실행해주세요.");
     }
   };
 
