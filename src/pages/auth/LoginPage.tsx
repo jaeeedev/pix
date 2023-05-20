@@ -53,7 +53,10 @@ const LoginPage = () => {
         );
 
         if (response) {
-          setModal("로그인 되었습니다.");
+          setModal({
+            open: true,
+            message: "로그인 되었습니다.",
+          });
           navigate("/", {
             replace: true,
           });
@@ -61,10 +64,12 @@ const LoginPage = () => {
       } catch (err) {
         if (err instanceof FirebaseError && err.code) {
           console.log(err);
-          setModal(
-            loginErrorCodeMessages[err.code] || loginErrorCodeMessages.default
-          );
-          // 동일한 오류가 또 발생하면 값은 안바뀌어서 모달이 다시안뜨네
+          setModal({
+            open: true,
+            message:
+              loginErrorCodeMessages[err.code] ||
+              loginErrorCodeMessages.default,
+          });
         }
       }
     },

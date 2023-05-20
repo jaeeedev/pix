@@ -36,13 +36,22 @@ const SignupPage = () => {
         );
 
         if (response) {
-          setModal("회원가입 되었습니다.");
+          setModal({
+            open: true,
+            message: "회원가입 되었습니다.",
+          });
           navigate("/", {
             replace: true,
           });
         }
       } catch (err) {
         console.log(err);
+
+        // 회원가입 에러 모달로 출력
+        setModal({
+          open: true,
+          message: "회원가입에 실패했습니다.",
+        });
       }
     },
     [navigate, setModal]

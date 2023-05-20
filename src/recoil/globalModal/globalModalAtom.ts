@@ -2,7 +2,10 @@ import { atom } from "recoil";
 
 const globalModalAtom = atom({
   key: "globalModalAtom",
-  default: "",
+  default: {
+    open: false,
+    message: "",
+  },
 });
 
 export default globalModalAtom;
