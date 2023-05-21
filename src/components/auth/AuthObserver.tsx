@@ -9,16 +9,18 @@ const AuthObserver = () => {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
+      const userCopy = JSON.parse(JSON.stringify(user));
+
       if (user) {
         if (user.uid === import.meta.env.VITE_adminUid) {
           setLoginState({
-            userInfo: user,
+            userInfo: userCopy,
             isLogin: true,
             isAdmin: true,
           });
         } else {
           setLoginState({
-            userInfo: user,
+            userInfo: userCopy,
             isLogin: true,
             isAdmin: false,
           });

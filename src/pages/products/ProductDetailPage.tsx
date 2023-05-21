@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { TItem } from "../../types/product";
 import ReviewSection from "../../components/products/ReviewSection";
 import ProductInfo from "../../components/products/ProductInfo";
+import PageTop from "../../components/common/PageTop";
 
 const ProductDetailPage = () => {
   const { id: productId = "" } = useParams();
@@ -25,6 +26,9 @@ const ProductDetailPage = () => {
 
   return (
     <ContentContainer>
+      <PageTop>
+        <PageTop.Title>상품 상세</PageTop.Title>
+      </PageTop>
       <ProductInfo currentData={currentData} currentParam={currentParam} />
       <ReviewSection />
     </ContentContainer>

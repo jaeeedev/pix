@@ -24,10 +24,6 @@ const ProductInfo = ({ currentData, currentParam }: Props) => {
   const { isLogin, userInfo } = useRecoilValue(authAtom);
   const { setModal } = useGlobalModal();
 
-  // 로그인 안한 경우에 클릭하면 로그인 하라고 알리기
-  // currentData에 amount 필드 추가해서 넘기기
-  // 이미 장바구니에 있는 경우 추가하지 않고 update하기
-
   const [count, setCount] = useState<number>(1);
   const countDown = useCallback(() => {
     setCount((prev) => Math.max(1, prev - 1));
@@ -77,6 +73,7 @@ const ProductInfo = ({ currentData, currentParam }: Props) => {
         }
       } catch (err) {
         console.log(err);
+        setModal("상품을 추가하지 못했습니다.");
       }
     }
   };
@@ -107,12 +104,12 @@ const ProductInfo = ({ currentData, currentParam }: Props) => {
           param: currentParam,
         });
 
-        console.log(response);
         if (response) {
           setModal("상품이 위시리스트에 추가되었습니다.");
         }
       } catch (err) {
         console.log(err);
+        setModal("상품을 추가하지 못했습니다.");
       }
     }
   };
