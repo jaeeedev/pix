@@ -3,11 +3,16 @@ import authAtom from "../../recoil/auth/authAtom";
 import { useRecoilValue } from "recoil";
 
 const MyPage = () => {
-  const { userInfo, isLogin } = useRecoilValue(authAtom);
+  const { userInfo } = useRecoilValue(authAtom);
 
-  console.log(isLogin);
-
-  return <ContentContainer>MyPage</ContentContainer>;
+  return (
+    <ContentContainer>
+      <div>
+        <p>{userInfo?.displayName}</p>
+        <p>{userInfo?.email}</p>
+      </div>
+    </ContentContainer>
+  );
 };
 
 export default MyPage;

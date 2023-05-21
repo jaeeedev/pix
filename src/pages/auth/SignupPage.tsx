@@ -7,16 +7,17 @@ import Button from "../../components/common/Button";
 import AuthBackground from "../../components/auth/AuthBackground";
 import { SyntheticEvent, useCallback } from "react";
 import { auth } from "../../firebase/initFirebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import useGlobalModal from "../../components/common/modal/useGlobalModal";
 import authAtom from "../../recoil/auth/authAtom";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 const emailRegex = "[a-zA-Z0-9]+@[a-zA-Z]+.[a-zA-Z]{2,}";
 const SignupPage = () => {
   const { setModal } = useGlobalModal();
   const navigate = useNavigate();
   const { isLogin } = useRecoilValue(authAtom);
+  const setAuthAtom = useSetRecoilState(authAtom);
 
   if (isLogin) navigate("/");
 
@@ -35,8 +36,16 @@ const SignupPage = () => {
           formData.password
         );
 
-        if (response) {
+        if (response && auth.currentUser) {
+          await updateProfile(auth.currentUser, {
+            displayName: formData.nickname,
+          });
+
           setModal("회원가입 되었습니다.");
+          setAuthAtom((prev) => {
+            const userCopy = JSON.parse(JSON.stringify(auth.currentUser));
+            return { ...prev, userInfo: userCopy };
+          });
           navigate("/", {
             replace: true,
           });
@@ -48,7 +57,7 @@ const SignupPage = () => {
         setModal("회원가입에 실패했습니다.");
       }
     },
-    [navigate, setModal]
+    [navigate, setAuthAtom, setModal]
   );
 
   return (
@@ -64,6 +73,13 @@ const SignupPage = () => {
               onSubmit={handleSubmit}
             >
               <PageTitle>회원가입</PageTitle>
+              <AuthInput
+                name="nickname"
+                placeholder="닉네임"
+                type="text"
+                minLength="2"
+                maxLength="10"
+              />
               <AuthInput
                 name="email"
                 type="email"
