@@ -13,6 +13,7 @@ import {
   getDocs,
   increment,
   query,
+  setDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -61,15 +62,13 @@ const ItemSet = ({ data }: Props) => {
       }
     } else {
       try {
-        const response = await addDoc(collection(cartRef, "items"), {
+        await setDoc(doc(cartRef, "items", data.productId), {
           ...data,
           count: 1,
+          productId: data.productId,
         });
 
-        console.log(response);
-        if (response) {
-          setModal("상품이 장바구니에 추가되었습니다.");
-        }
+        setModal("상품이 장바구니에 추가되었습니다.");
       } catch (err) {
         console.log(err);
         setModal("상품을 추가하지 못했습니다.");

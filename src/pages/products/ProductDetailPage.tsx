@@ -11,13 +11,13 @@ import PageTop from "../../components/common/PageTop";
 const ProductDetailPage = () => {
   const { id: productId = "" } = useParams();
   const [currentData, setCurrentData] = useState<TItem | null>(null);
-  const [currentParam, setCurrentParam] = useState<string>("");
 
   const getData = useCallback(async () => {
     const docRef = doc(db, "products", productId);
     const docSnap = await getDoc(docRef);
     setCurrentData(docSnap.data() as TItem);
-    setCurrentParam(docSnap.id);
+
+    console.log(productId, docSnap.id);
   }, [productId]);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const ProductDetailPage = () => {
       <PageTop>
         <PageTop.Title>상품 상세</PageTop.Title>
       </PageTop>
-      <ProductInfo currentData={currentData} currentParam={currentParam} />
+      <ProductInfo currentData={currentData} productId={productId} />
       <ReviewSection />
     </ContentContainer>
   );

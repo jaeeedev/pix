@@ -10,6 +10,7 @@ import {
   getDocs,
   increment,
   query,
+  setDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -17,10 +18,10 @@ import { db } from "../../firebase/initFirebase";
 
 type Props = {
   currentData: TItem | null;
-  currentParam: string;
+  productId: string;
 };
 
-const ProductInfo = ({ currentData, currentParam }: Props) => {
+const ProductInfo = ({ currentData, productId }: Props) => {
   const { isLogin, userInfo } = useRecoilValue(authAtom);
   const { setModal } = useGlobalModal();
 
@@ -41,7 +42,7 @@ const ProductInfo = ({ currentData, currentParam }: Props) => {
     const cartRef = doc(db, "cart", userInfo.uid);
     const cartQuery = query(
       collection(db, "cart", userInfo.uid, "items"),
-      where("param", "==", currentParam)
+      where("productId", "==", productId)
     );
 
     const cartSnapshot = await getDocs(cartQuery);
@@ -61,15 +62,13 @@ const ProductInfo = ({ currentData, currentParam }: Props) => {
       }
     } else {
       try {
-        const response = await addDoc(collection(cartRef, "items"), {
+        await setDoc(doc(cartRef, "items", productId), {
           ...currentData,
+          productId,
           count,
         });
 
-        console.log(response);
-        if (response) {
-          setModal("상품이 장바구니에 추가되었습니다.");
-        }
+        setModal("상품이 장바구니에 추가되었습니다.");
       } catch (err) {
         console.log(err);
         setModal("상품을 추가하지 못했습니다.");
@@ -86,7 +85,7 @@ const ProductInfo = ({ currentData, currentParam }: Props) => {
     const wishRef = doc(db, "wish", userInfo.uid);
     const wishQuery = query(
       collection(db, "wish", userInfo.uid, "items"),
-      where("param", "==", currentParam)
+      where("productId", "==", productId)
     );
 
     const wishSnapshot = await getDocs(wishQuery);
@@ -98,13 +97,12 @@ const ProductInfo = ({ currentData, currentParam }: Props) => {
       return;
     } else {
       try {
-        const response = await addDoc(collection(wishRef, "items"), {
+        await setDoc(doc(wishRef, "items", productId), {
           ...currentData,
+          productId,
         });
 
-        if (response) {
-          setModal("상품이 위시리스트에 추가되었습니다.");
-        }
+        setModal("상품이 위시리스트에 추가되었습니다.");
       } catch (err) {
         console.log(err);
         setModal("상품을 추가하지 못했습니다.");

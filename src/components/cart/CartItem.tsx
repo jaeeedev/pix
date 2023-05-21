@@ -1,8 +1,9 @@
-import { useCallback, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { CartData } from "../../types/cart";
 import { Link } from "react-router-dom";
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -13,15 +14,17 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase/initFirebase";
 import { User } from "firebase/auth";
+import { BsFillTrash3Fill } from "react-icons/bs";
 
 type Props = {
   data: CartData;
-  userInfo: User;
+  userInfo: User | null;
+  setNeedRefetch: Dispatch<SetStateAction<boolean>>;
 };
 
 type UpdateParam = "up" | "down";
 
-const CartItem = ({ data, userInfo }: Props) => {
+const CartItem = ({ data, userInfo, setNeedRefetch }: Props) => {
   const [count, setCount] = useState<number>(data.count);
 
   const updateCount = useCallback(
@@ -51,12 +54,25 @@ const CartItem = ({ data, userInfo }: Props) => {
     [count, data.productId, userInfo]
   );
 
+  const deleteItem = async () => {
+    if (!userInfo) return;
+
+    try {
+      await deleteDoc(doc(db, "cart", userInfo.uid, "items", data.productId));
+      setNeedRefetch((prev) => !prev);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="flex gap-4 justify-between items-center py-4 border-b">
-      <input type="checkbox" />
+      <button onClick={deleteItem}>
+        <BsFillTrash3Fill />
+      </button>
       <div className="flex-1">
         <Link
-          className="flex gap-2 items-center "
+          className="flex gap-4 items-center "
           to={`/products/${data.productId}`}
         >
           <div className="w-20 h-20 bg-slate-200 rounded-md overflow-hidden">

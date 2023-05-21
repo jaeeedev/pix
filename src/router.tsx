@@ -12,6 +12,7 @@ const ProductDetailPage = lazy(
 );
 const AdminPage = lazy(() => import("./pages/admin/AdminPage"));
 const CartPage = lazy(() => import("./pages/cart/CartPage"));
+const MyPage = lazy(() => import("./pages/mypage/MyPage"));
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: "/admin",
         element: <AdminPage />,
+      },
+      {
+        path: "/mypage",
+        element: <MyPage />,
       },
       {
         path: "*",
