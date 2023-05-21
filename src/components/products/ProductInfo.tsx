@@ -64,7 +64,6 @@ const ProductInfo = ({ currentData, currentParam }: Props) => {
         const response = await addDoc(collection(cartRef, "items"), {
           ...currentData,
           count,
-          param: currentParam,
         });
 
         console.log(response);
@@ -101,7 +100,6 @@ const ProductInfo = ({ currentData, currentParam }: Props) => {
       try {
         const response = await addDoc(collection(wishRef, "items"), {
           ...currentData,
-          param: currentParam,
         });
 
         if (response) {

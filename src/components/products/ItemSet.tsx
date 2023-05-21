@@ -37,7 +37,7 @@ const ItemSet = ({ data }: Props) => {
     const cartRef = doc(db, "cart", userInfo.uid);
     const cartQuery = query(
       collection(db, "cart", userInfo.uid, "items"),
-      where("param", "==", data.productId)
+      where("productId", "==", data.productId)
     );
 
     const cartSnapshot = await getDocs(cartQuery);
@@ -64,7 +64,6 @@ const ItemSet = ({ data }: Props) => {
         const response = await addDoc(collection(cartRef, "items"), {
           ...data,
           count: 1,
-          param: data.productId,
         });
 
         console.log(response);
