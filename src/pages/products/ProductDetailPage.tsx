@@ -16,8 +16,6 @@ const ProductDetailPage = () => {
     const docRef = doc(db, "products", productId);
     const docSnap = await getDoc(docRef);
     setCurrentData(docSnap.data() as TItem);
-
-    console.log(productId, docSnap.id);
   }, [productId]);
 
   useEffect(() => {
