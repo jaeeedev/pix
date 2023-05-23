@@ -18,63 +18,14 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../firebase/initFirebase";
+import useCart from "../../hooks/useCart";
 
 type Props = {
   data: TItem;
 };
 
 const ItemSet = ({ data }: Props) => {
-  const { isLogin, userInfo } = useRecoilValue(authAtom);
-  const { setModal } = useGlobalModal();
-  const navigate = useNavigate();
-
-  const addCart = useCallback(async () => {
-    if (!userInfo || !isLogin) {
-      setModal("로그인 후 이용해주세요.");
-      navigate("/login");
-      return;
-    }
-
-    const cartRef = doc(db, "cart", userInfo.uid);
-    const cartQuery = query(
-      collection(db, "cart", userInfo.uid, "items"),
-      where("productId", "==", data.productId)
-    );
-
-    const cartSnapshot = await getDocs(cartQuery);
-    const isExist = cartSnapshot.docs.length !== 0;
-
-    if (isExist) {
-      try {
-        const duplicateCheck = confirm(
-          "이미 추가된 상품입니다. 추가하시겠습니까?"
-        );
-
-        if (!duplicateCheck) return;
-
-        await updateDoc(cartSnapshot.docs[0].ref, {
-          count: increment(1),
-        });
-
-        setModal("상품이 장바구니에 추가되었습니다.");
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      try {
-        await setDoc(doc(cartRef, "items", data.productId), {
-          ...data,
-          count: 1,
-          productId: data.productId,
-        });
-
-        setModal("상품이 장바구니에 추가되었습니다.");
-      } catch (err) {
-        console.log(err);
-        setModal("상품을 추가하지 못했습니다.");
-      }
-    }
-  }, [data, isLogin, navigate, setModal, userInfo]);
+  const { addCart } = useCart();
 
   return (
     <div className="rounded-xl overflow-hidden border border-slate-300 relative">
@@ -94,7 +45,7 @@ const ItemSet = ({ data }: Props) => {
           </div>
           <button
             className="rounded-md p-2 bg-slate-500 text-white"
-            onClick={addCart}
+            onClick={() => addCart(data.productId, data)}
           >
             <BsFillCartFill size={18} />
           </button>
