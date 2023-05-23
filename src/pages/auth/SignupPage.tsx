@@ -11,6 +11,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import useGlobalModal from "../../components/common/modal/useGlobalModal";
 import authAtom from "../../recoil/auth/authAtom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import { minNicknameLength, maxNicknameLength } from "../../utills/constants";
 
 const emailRegex = "[a-zA-Z0-9]+@[a-zA-Z]+.[a-zA-Z]{2,}";
 const SignupPage = () => {
@@ -77,8 +78,8 @@ const SignupPage = () => {
                 name="nickname"
                 placeholder="닉네임"
                 type="text"
-                minLength="2"
-                maxLength="10"
+                minLength={minNicknameLength}
+                maxLength={maxNicknameLength}
               />
               <AuthInput
                 name="email"

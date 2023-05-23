@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { updateProfile } from "firebase/auth";
 import { auth } from "../../firebase/initFirebase";
 import useGlobalModal from "../common/modal/useGlobalModal";
+import { maxNicknameLength, minNicknameLength } from "../../utills/constants";
 
 const Profile = () => {
   const { userInfo } = useRecoilValue(authAtom);
@@ -65,6 +66,8 @@ const Profile = () => {
             <div className="flex gap-4  mb-2">
               <input
                 className="block p-2"
+                minLength={minNicknameLength}
+                maxLength={maxNicknameLength}
                 defaultValue={userInfo?.displayName}
                 ref={changeInputRef}
               />
