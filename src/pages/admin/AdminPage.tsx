@@ -22,7 +22,7 @@ const AdminPage = () => {
     <ContentContainer>
       <PageTop>
         <PageTop.Title>관리자 페이지</PageTop.Title>
-        <PageTop.Description>상품을 관리할 수 있습니다.</PageTop.Description>
+        <PageTop.Description>상품을 추가할 수 있습니다.</PageTop.Description>
       </PageTop>
       <AddProductSection />
     </ContentContainer>

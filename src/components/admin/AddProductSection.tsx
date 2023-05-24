@@ -1,28 +1,40 @@
-import React, { ChangeEvent, FormEvent, useCallback, useState } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  SyntheticEvent,
+  useCallback,
+  useState,
+} from "react";
 import { BsFileEarmarkArrowUp } from "react-icons/bs";
-import { storage } from "../../firebase/initFirebase";
+import { db, storage } from "../../firebase/initFirebase";
 import {
   getDownloadURL,
   ref,
   uploadBytes,
   uploadBytesResumable,
 } from "firebase/storage";
-
-type Metadata = {
-  name: string;
-  size: number;
-};
+import { addDoc, collection } from "firebase/firestore";
 
 const AddProductSection = () => {
   const [tempUrl, setTempUrl] = useState<string>("");
-  const [metadata, setMetadata] = useState<Metadata | null>(null);
+  const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+
+  const handleBlockText = (e: SyntheticEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+    target.value = target.value
+      .replace(/[^0-9.]/g, "")
+      .replace(/(\.*)\./g, "$1");
+  };
+
+  // 썸네일에 삭제 기능 -> db temp에서도 삭제시키기, currentFile 상태 비우기
 
   const uploadImage = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
     try {
       const file = e.target.files?.[0];
       if (!file) return;
 
+      setCurrentFile(file);
       const maxSize = 5 * 1024 * 1024;
       const fileSize = file.size;
 
@@ -51,10 +63,6 @@ const AddProductSection = () => {
           const url = await getDownloadURL(uploadTask.snapshot.ref);
           if (url) {
             setTempUrl(url);
-            setMetadata({
-              name: file.name,
-              size: file.size,
-            });
             console.log("uploaded!");
           }
         }
@@ -76,19 +84,72 @@ const AddProductSection = () => {
     e.preventDefault();
   };
 
-  const handleDrop = (e: DragEvent) => {
+  const handleDrop = async (e: DragEvent) => {
     e.stopPropagation();
     e.preventDefault();
 
     const { files } = e.dataTransfer;
 
-    console.log(files[0]);
+    try {
+      const file = files[0];
+      if (!file) return;
+
+      setCurrentFile(files[0]);
+      const maxSize = 5 * 1024 * 1024;
+      const fileSize = file.size;
+
+      if (fileSize > maxSize) {
+        alert("파일은 최대 5MB까지 등록 가능합니다.");
+        return;
+      }
+
+      const storageRef = ref(storage, `temp/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadProgress(progress);
+        },
+        (err) => {
+          // 업로드 중 에러
+          console.log(err);
+        },
+        async () => {
+          // 업로드 완료 시 콜백
+          const url = await getDownloadURL(uploadTask.snapshot.ref);
+          if (url) {
+            setTempUrl(url);
+            console.log("uploaded!");
+          }
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    } finally {
+      e.target.value = "";
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    const formData = Object.fromEntries(new FormData(e.target));
+
+    const productData = {
+      ...formData,
+      createdAt: new Date(),
+      soldOut: false,
+      imageUrl: tempUrl,
+      price: Number(formData.price),
+    };
+
     try {
+      const response = await addDoc(collection(db, "products"), productData);
+      if (response) console.log("등록 완료");
     } catch (err) {
       console.log(err);
     }
@@ -100,10 +161,11 @@ const AddProductSection = () => {
         <div className="h-[150px] w-full rounded-md border-dashed border-2 relative hover:border-solid hover:border-blue-400">
           <input
             type="file"
-            id="fileImage"
-            name="fileImage"
+            id="imageUrl"
+            name="imageUrl"
             accept="image/png, image/jpeg"
             className="block w-full h-full cursor-pointer opacity-0"
+            required
             onDrop={handleDrop}
             onDragEnter={handleDragEnter}
             onDragOver={handleDragOver}
@@ -119,57 +181,67 @@ const AddProductSection = () => {
           </div>
         </div>
 
-        <div className="p-4 border border-solid mt-4 flex items-center gap-4">
-          <progress max="100" value={uploadProgress} />
-          <span className="text-sm">{uploadProgress} %</span>
-        </div>
-
-        <div className="mt-4 flex gap-4 items-center">
-          <div className="w-20 h-20 overflow-hidden rounded-full ">
-            <img
-              className="block w-full h-full object-cover"
-              src={tempUrl}
-              alt="첨부파일 썸네일"
-            />
+        {tempUrl && (
+          <div className="p-4 border border-solid mt-4 flex items-center gap-4">
+            <progress max="100" value={uploadProgress} />
+            <span className="text-sm">{uploadProgress} %</span>
           </div>
-          <div>
-            <span>{metadata?.name}</span>
-            <p className="text-sm">
-              {(metadata?.size / (1024 * 1024)).toFixed(2) + "MB"}
-            </p>
+        )}
+        {tempUrl && (
+          <div className="mt-4 flex gap-4 items-center">
+            <div className="w-20 h-20 overflow-hidden rounded-full ">
+              <img
+                className="block w-full h-full object-cover"
+                src={tempUrl}
+                alt="첨부파일 썸네일"
+              />
+            </div>
+            <div>
+              <span>{currentFile?.name}</span>
+              <p className="text-sm">
+                {(currentFile?.size / (1024 * 1024)).toFixed(2) + "MB"}
+              </p>
+            </div>
           </div>
-        </div>
+        )}
         <div className="flex flex-col sm:flex-row items-start gap-4 mt-4">
-          <div className="w-full flex-1">
-            <label className="block font-semibold mb-2" htmlFor="productTitle">
+          <div className="w-full flex-1 mb-4">
+            <label className="block font-semibold mb-2" htmlFor="title">
               상품명
             </label>
             <input
-              id="productTitle"
+              id="title"
+              name="title"
               className="block w-full bg-slate-100 p-2 rounded-md"
               type="text"
+              required
             />
 
-            <label className="block font-semibold mb-2" htmlFor="productPrice">
+            <label className="block font-semibold mb-2" htmlFor="price">
               가격
             </label>
             <input
-              id="productPrice"
+              id="price"
+              name="price"
               className="block w-full bg-slate-100 p-2 rounded-md"
               type="text"
+              onInput={handleBlockText}
+              required
             />
           </div>
 
           <div className="w-full flex-1 mb-4">
             <label
               className="block `flex-1 font-semibold mb-2"
-              htmlFor="productDescription"
+              htmlFor="description"
             >
               상품 설명
             </label>
             <textarea
-              id="productDescription"
-              className="block w-full bg-slate-100 rounded-md"
+              id="description"
+              name="description"
+              className="block w-full bg-slate-100 rounded-md p-2 min-h-[110px]"
+              required
             />
           </div>
         </div>
