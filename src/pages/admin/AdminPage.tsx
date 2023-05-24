@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import authAtom from "../../recoil/auth/authAtom";
 import { useEffect } from "react";
-import PageTitle from "../../components/common/PageTitle";
-import AdminSortSection from "../../components/admin/AdminSortSection";
+import PageTop from "../../components/common/PageTop";
+import AddProductSection from "../../components/admin/AddProductSection";
 
 const AdminPage = () => {
   const { isLogin, isAdmin } = useRecoilValue(authAtom);
@@ -20,9 +20,11 @@ const AdminPage = () => {
 
   return (
     <ContentContainer>
-      <PageTitle>관리자 페이지</PageTitle>
-
-      <AdminSortSection />
+      <PageTop>
+        <PageTop.Title>관리자 페이지</PageTop.Title>
+        <PageTop.Description>상품을 관리할 수 있습니다.</PageTop.Description>
+      </PageTop>
+      <AddProductSection />
     </ContentContainer>
   );
 };

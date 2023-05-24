@@ -1,7 +1,6 @@
 import authAtom from "../../recoil/auth/authAtom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { storage } from "../../firebase/initFirebase";
-import { ref, uploadBytes } from "firebase/storage";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { updateProfile } from "firebase/auth";
@@ -21,14 +20,6 @@ const Profile = () => {
   useEffect(() => {
     if (!userInfo) navigate("/");
   }, [navigate, userInfo]);
-
-  // const handleChange = async (e) => {
-  //   const file = e.target.files[0];
-
-  //   const storageRef = ref(storage, `profile/${userInfo?.email}`);
-  //   const response = await uploadBytes(storageRef, file);
-  //   if (response) console.log("uploaded!");
-  // };
 
   const changeNickname = useCallback(async () => {
     if (!auth.currentUser || !changeInputRef.current) return;
@@ -68,7 +59,7 @@ const Profile = () => {
                 className="block p-2"
                 minLength={minNicknameLength}
                 maxLength={maxNicknameLength}
-                defaultValue={userInfo?.displayName}
+                defaultValue={userInfo?.displayName || ""}
                 ref={changeInputRef}
               />
               <button
@@ -88,7 +79,9 @@ const Profile = () => {
             </div>
           )}
           {!changingNickname && (
-            <span className="font-bold text-2xl">{userInfo?.displayName}</span>
+            <span className="font-bold text-2xl">
+              {userInfo?.displayName || "user"}
+            </span>
           )}
           <p className="font-semibold">({userInfo?.email})</p>
           <button

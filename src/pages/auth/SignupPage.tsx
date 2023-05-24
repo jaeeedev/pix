@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthDeco from "../../components/auth/AuthDeco";
 import AuthInput from "../../components/auth/AuthInput";
 import ContentContainer from "../../components/common/ContentContainer";
-import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/common/Button";
 import AuthBackground from "../../components/auth/AuthBackground";
 import { SyntheticEvent, useCallback } from "react";
@@ -73,7 +72,7 @@ const SignupPage = () => {
               className="w-4/5 mx-auto py-8 lg:py-0"
               onSubmit={handleSubmit}
             >
-              <PageTitle>회원가입</PageTitle>
+              <h3>회원가입</h3>
               <AuthInput
                 name="nickname"
                 placeholder="닉네임"

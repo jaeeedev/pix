@@ -9,8 +9,6 @@ import Button from "../common/Button";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebase/initFirebase";
 import { TItem } from "../../types/product";
-import PageTitle from "../common/PageTitle";
-
 const Input = ({ ...props }) => {
   return (
     <input
@@ -104,7 +102,6 @@ const AddProductForm = () => {
           onSubmit={handleSubmit}
           className="p-4 rounded-md shadow-md fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white"
         >
-          <PageTitle>상품 추가</PageTitle>
           <button
             className="absolute right-4 top-4"
             onClick={() => {

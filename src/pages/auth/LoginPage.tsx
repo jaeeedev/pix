@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthDeco from "../../components/auth/AuthDeco";
 import AuthInput from "../../components/auth/AuthInput";
 import ContentContainer from "../../components/common/ContentContainer";
-import PageTitle from "../../components/common/PageTitle";
 import Button from "../../components/common/Button";
 import AuthBackground from "../../components/auth/AuthBackground";
 import { SyntheticEvent, useCallback, useEffect } from "react";
@@ -82,7 +81,7 @@ const LoginPage = () => {
               className="w-4/5 mx-auto py-8 lg:py-0"
               onSubmit={handleSubmit}
             >
-              <PageTitle>로그인</PageTitle>
+              <h3>로그인</h3>
               <AuthInput
                 name="email"
                 type="email"
