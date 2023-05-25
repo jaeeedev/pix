@@ -53,6 +53,7 @@ const WishList = () => {
   return (
     <div className="flex-1 bg-slate-100 p-4 rounded-md h-[380px] overflow-y-auto">
       <h3 className="font-bold text-lg mb-4">wishlist</h3>
+      {wishlist.length === 0 && <div>추가한 상품이 없습니다.</div>}
       {wishlist.map((item) => (
         <div
           key={item.productId}

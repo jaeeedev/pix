@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import ContentContainer from "../../components/common/ContentContainer";
 import PageTop from "../../components/common/PageTop";
 

@@ -76,7 +76,11 @@ const CartItem = ({ data, userInfo, setNeedRefetch }: Props) => {
           to={`/products/${data.productId}`}
         >
           <div className="w-20 h-20 bg-slate-200 rounded-md overflow-hidden">
-            <img src={data.imageUrl} alt={data.title + " 이미지"} />
+            <img
+              src={data.imageUrl}
+              alt={data.title + " 이미지"}
+              className="block w-full h-full object-cover"
+            />
           </div>
           <p className="text-lg font-semibold">{data.title}</p>
         </Link>
@@ -96,7 +100,7 @@ const CartItem = ({ data, userInfo, setNeedRefetch }: Props) => {
           +
         </button>
       </div>
-      <span className="text-lg font-semibold">
+      <span className="text-lg font-semibold min-w-[50px] text-end">
         {data.price.toLocaleString()}
       </span>
     </div>

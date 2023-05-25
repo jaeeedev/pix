@@ -4,7 +4,6 @@ import authAtom from "../../recoil/auth/authAtom";
 import { useRecoilValue } from "recoil";
 import useGlobalModal from "../common/modal/useGlobalModal";
 import {
-  addDoc,
   collection,
   doc,
   getDocs,
@@ -113,13 +112,19 @@ const ProductInfo = ({ currentData, productId }: Props) => {
   return (
     <div className="sm:flex gap-4 sm:mb-4">
       <div className="max-h-[300px] overflow-hidden rounded-md flex-1 mb-4 sm:mb-0">
-        <img src={currentData?.imageUrl} alt={currentData?.title + " 이미지"} />
+        <img
+          src={currentData?.imageUrl}
+          alt={currentData?.title + " 이미지"}
+          className="block w-full h-full object-cover"
+        />
       </div>
 
       <div className="flex-1 flex flex-col justify-between">
         <h3 className="text-2xl font-bold mb-2">{currentData?.title}</h3>
         <p>{currentData?.description}</p>
-        <div className="text-2xl font-bold my-4">{currentData?.price}</div>
+        <div className="text-2xl font-bold my-4">
+          {currentData?.price.toLocaleString()}&nbsp;원
+        </div>
         <hr />
 
         <div className="border border-slate-200 border-solid rounded-md w-fit my-4">
