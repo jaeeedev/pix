@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { TItem } from "../types/product";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase/initFirebase";
 
 const useProducts = () => {
   const [items, setItems] = useState<TItem[]>([]);
   const getData = async () => {
-    const test = await getDocs(collection(db, "products"));
+    const productsRef = collection(db, "products");
+    const sortQuery = query(
+      productsRef,
+      orderBy("createdAt", "desc"),
+      limit(10)
+    );
+    const products = await getDocs(sortQuery);
+    console.log(sortQuery);
 
-    const itemArr: TItem[] = [];
-
-    test.forEach((doc) => {
-      const data: TItem = {
+    const itemArr = products.docs.map((doc) => {
+      return {
         productId: doc.id,
         ...(doc.data() as Omit<TItem, "productId">),
         createdAt: doc.data().createdAt.toDate(),
       };
-      itemArr.push(data);
     });
 
     setItems(itemArr);
