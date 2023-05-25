@@ -25,6 +25,7 @@ const Textarea = ({ ...props }) => {
     />
   );
 };
+
 type InputData = {
   [key: string]: string | number | boolean;
 };
@@ -147,7 +148,7 @@ const AddProductForm = () => {
             />
           </label>
           <div />
-          <Button full>추가</Button>
+          <Button full="on">추가</Button>
         </form>
       )}
     </div>

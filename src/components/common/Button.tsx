@@ -3,18 +3,21 @@ import { twMerge } from "tailwind-merge";
 
 type ButtonProps = Children & {
   className?: string;
-  full?: boolean;
+  full?: string;
+  onClick?: () => void;
 };
 
 /**
- * `full` : 버튼의 width가 100%
+ * `full="on"` : 버튼의 width가 100%
  */
 const Button = ({ children, ...props }: ButtonProps) => {
   const { full } = props;
   return (
     <button
       className={twMerge(
-        `px-8 py-4 bg-slate-500 text-white rounded-md ${!!full && "w-full"}`
+        `px-10 py-3 bg-slate-800 text-white rounded-md active:bg-slate-700 ${
+          full === "on" && "w-full"
+        }`
       )}
       {...props}
     >

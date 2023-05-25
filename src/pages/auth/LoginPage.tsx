@@ -103,7 +103,7 @@ const LoginPage = () => {
                   아직 계정이 없으세요?
                 </Link>
               </div>
-              <Button full>로그인</Button>
+              <Button full="on">로그인</Button>
             </form>
           </div>
         </div>

@@ -101,7 +101,7 @@ const SignupPage = () => {
                   이미 계정이 있으세요?
                 </Link>
               </div>
-              <Button full>회원가입</Button>
+              <Button full="on">회원가입</Button>
             </form>
           </div>
         </div>
