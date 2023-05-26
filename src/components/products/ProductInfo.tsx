@@ -145,7 +145,7 @@ const ProductInfo = ({ currentData, productId }: Props) => {
             wish
           </button>
           <button
-            className="flex-1 p-4 border-solid border border-slate-200 rounded-md active:bg-slate-200"
+            className="flex-1 p-4 bg-slate-800 border-solid border border-slate-800 text-white rounded-md"
             onClick={addCart}
           >
             cart

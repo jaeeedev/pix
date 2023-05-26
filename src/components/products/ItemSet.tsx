@@ -32,6 +32,7 @@ const ItemSet = ({ data }: Props) => {
       <div className="bg-slate-200 w-full h-[200px] overflow-hidden">
         <Link to={`/products/${data.productId}`}>
           <img
+            loading="lazy"
             className="block w-full h-full object-cover"
             src={data.imageUrl}
             alt={`${data.title} 이미지`}

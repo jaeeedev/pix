@@ -1,10 +1,12 @@
+import { useRef } from "react";
 import ContentContainer from "../../components/common/ContentContainer";
 import PageTop from "../../components/common/PageTop";
 import ItemSet from "../../components/products/ItemSet";
 import useProducts from "../../hooks/useProducts";
 
 const ProductsPage = () => {
-  const { items } = useProducts();
+  const intersectionRef = useRef<HTMLDivElement>(null);
+  const { items } = useProducts(intersectionRef);
   return (
     <ContentContainer>
       <PageTop>
@@ -15,6 +17,7 @@ const ProductsPage = () => {
           <ItemSet key={item.productId} data={item} />
         ))}
       </div>
+      <div className="h-4" ref={intersectionRef} />
     </ContentContainer>
   );
 };

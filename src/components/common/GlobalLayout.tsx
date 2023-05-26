@@ -3,19 +3,20 @@ import Footer from "./Footer";
 import { Outlet } from "react-router-dom";
 import { Suspense } from "react";
 import AuthObserver from "../auth/AuthObserver";
+import LoadingFallback from "./LoadingFallback";
 
 const GlobalLayout = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <div className="h-screen">
-        <Header />
-        <div className="min-h-full">
+    <div className="h-screen">
+      <Header />
+      <div className="min-h-full">
+        <Suspense fallback={<LoadingFallback />}>
           <Outlet />
-        </div>
-        <Footer />
-        <AuthObserver />
+        </Suspense>
       </div>
-    </Suspense>
+      <Footer />
+      <AuthObserver />
+    </div>
   );
 };
 

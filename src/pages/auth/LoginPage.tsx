@@ -81,7 +81,7 @@ const LoginPage = () => {
               className="w-4/5 mx-auto py-8 lg:py-0"
               onSubmit={handleSubmit}
             >
-              <h3>로그인</h3>
+              <h3 className="mb-4 font-bold text-3xl">로그인</h3>
               <AuthInput
                 name="email"
                 type="email"

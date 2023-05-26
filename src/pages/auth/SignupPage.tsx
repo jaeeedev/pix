@@ -72,7 +72,7 @@ const SignupPage = () => {
               className="w-4/5 mx-auto py-8 lg:py-0"
               onSubmit={handleSubmit}
             >
-              <h3>회원가입</h3>
+              <h3 className="mb-4 font-bold text-3xl">회원가입</h3>
               <AuthInput
                 name="nickname"
                 placeholder="닉네임"
