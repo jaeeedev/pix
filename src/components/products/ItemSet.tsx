@@ -1,24 +1,9 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BsFillCartFill } from "react-icons/bs";
-import { AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { TItem } from "../../types/product";
-import { useCallback } from "react";
-import { useRecoilValue } from "recoil";
-import authAtom from "../../recoil/auth/authAtom";
-import useGlobalModal from "../common/modal/useGlobalModal";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDocs,
-  increment,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { db } from "../../firebase/initFirebase";
 import useCart from "../../hooks/useCart";
+import useWish from "../../hooks/useWish";
 
 type Props = {
   data: TItem;
@@ -26,14 +11,15 @@ type Props = {
 
 const ItemSet = ({ data }: Props) => {
   const { addCart } = useCart();
+  const { addWish } = useWish();
 
   return (
     <div className="rounded-xl overflow-hidden border border-slate-300 relative">
-      <div className="bg-slate-200 w-full h-[200px] overflow-hidden">
+      <div className="bg-slate-100 w-full h-[200px] overflow-hidden">
         <Link to={`/products/${data.productId}`}>
           <img
             loading="lazy"
-            className="block w-full h-full object-cover"
+            className="block mx-auto h-full object-cover scale-110 drop-shadow-md"
             src={data.imageUrl}
             alt={`${data.title} 이미지`}
           />
@@ -49,14 +35,17 @@ const ItemSet = ({ data }: Props) => {
             <span>{data.price}</span>
           </div>
           <button
-            className="rounded-md p-2 bg-slate-500 text-white"
+            className="rounded-md p-2 bg-slate-800 text-white"
             onClick={() => addCart(data.productId, data)}
           >
             <BsFillCartFill size={18} />
           </button>
         </div>
       </div>
-      <button className="absolute right-4 top-4 text-slate-500">
+      <button
+        className="absolute right-2 top-2 rounded-full overflow-hidden text-slate-500 p-2 active:text-red-400 active:bg-red-100"
+        onClick={() => addWish(data.productId, data)}
+      >
         <AiOutlineHeart size={20} />
       </button>
     </div>

@@ -1,9 +1,12 @@
 import ContentContainer from "../../components/common/ContentContainer";
+import ImageSection from "../../components/main/ImageSection";
 
 const MainPage = () => {
   return (
     <div>
-      <ContentContainer>메인페이지</ContentContainer>
+      <ContentContainer>
+        <ImageSection />
+      </ContentContainer>
     </div>
   );
 };

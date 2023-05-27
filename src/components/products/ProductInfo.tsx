@@ -1,19 +1,7 @@
 import { useCallback, useState } from "react";
 import { TItem } from "../../types/product";
-import authAtom from "../../recoil/auth/authAtom";
-import { useRecoilValue } from "recoil";
-import useGlobalModal from "../common/modal/useGlobalModal";
-import {
-  collection,
-  doc,
-  getDocs,
-  increment,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { db } from "../../firebase/initFirebase";
+import useCart from "../../hooks/useCart";
+import useWish from "../../hooks/useWish";
 
 type Props = {
   currentData: TItem | null;
@@ -21,9 +9,6 @@ type Props = {
 };
 
 const ProductInfo = ({ currentData, productId }: Props) => {
-  const { isLogin, userInfo } = useRecoilValue(authAtom);
-  const { setModal } = useGlobalModal();
-
   const [count, setCount] = useState<number>(1);
   const countDown = useCallback(() => {
     setCount((prev) => Math.max(1, prev - 1));
@@ -32,82 +17,8 @@ const ProductInfo = ({ currentData, productId }: Props) => {
     setCount((prev) => Math.min(10, prev + 1));
   }, []);
 
-  const addCart = async () => {
-    if (!userInfo || !isLogin) {
-      setModal("로그인 후 이용해주세요.");
-      return;
-    }
-
-    const cartRef = doc(db, "cart", userInfo.uid);
-    const cartQuery = query(
-      collection(db, "cart", userInfo.uid, "items"),
-      where("productId", "==", productId)
-    );
-
-    const cartSnapshot = await getDocs(cartQuery);
-    const isExist = cartSnapshot.docs.length !== 0;
-
-    // cart(컬)/[uid](문)/items(컬)/상품 데이터들(문)
-
-    if (isExist) {
-      try {
-        await updateDoc(cartSnapshot.docs[0].ref, {
-          count: increment(count),
-        });
-
-        setModal("상품이 장바구니에 추가되었습니다.");
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      try {
-        await setDoc(doc(cartRef, "items", productId), {
-          ...currentData,
-          productId,
-          count,
-        });
-
-        setModal("상품이 장바구니에 추가되었습니다.");
-      } catch (err) {
-        console.log(err);
-        setModal("상품을 추가하지 못했습니다.");
-      }
-    }
-  };
-
-  const addWish = async () => {
-    if (!userInfo || !isLogin) {
-      setModal("로그인 후 이용해주세요.");
-      return;
-    }
-
-    const wishRef = doc(db, "wish", userInfo.uid);
-    const wishQuery = query(
-      collection(db, "wish", userInfo.uid, "items"),
-      where("productId", "==", productId)
-    );
-
-    const wishSnapshot = await getDocs(wishQuery);
-    const isExist = wishSnapshot.docs.length !== 0;
-
-    if (isExist) {
-      setModal("이미 담은 상품입니다.");
-
-      return;
-    } else {
-      try {
-        await setDoc(doc(wishRef, "items", productId), {
-          ...currentData,
-          productId,
-        });
-
-        setModal("상품이 위시리스트에 추가되었습니다.");
-      } catch (err) {
-        console.log(err);
-        setModal("상품을 추가하지 못했습니다.");
-      }
-    }
-  };
+  const { addCart } = useCart();
+  const { addWish } = useWish();
 
   return (
     <div className="sm:flex gap-4 sm:mb-4">
@@ -115,7 +26,7 @@ const ProductInfo = ({ currentData, productId }: Props) => {
         <img
           src={currentData?.imageUrl}
           alt={currentData?.title + " 이미지"}
-          className="block w-full h-full object-cover"
+          className="block h-full object-cover mx-auto drop-shadow-md transition duration-150 hover:scale-105"
         />
       </div>
 
@@ -140,13 +51,19 @@ const ProductInfo = ({ currentData, productId }: Props) => {
         <div className="flex gap-4">
           <button
             className="flex-1 p-4 border-solid border border-slate-200 rounded-md active:bg-slate-200"
-            onClick={addWish}
+            onClick={() => {
+              if (!currentData) return;
+              addWish(productId, currentData);
+            }}
           >
             wish
           </button>
           <button
             className="flex-1 p-4 bg-slate-800 border-solid border border-slate-800 text-white rounded-md"
-            onClick={addCart}
+            onClick={() => {
+              if (!currentData) return;
+              addCart(productId, currentData);
+            }}
           >
             cart
           </button>
