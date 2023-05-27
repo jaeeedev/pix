@@ -7,7 +7,6 @@ import {
   deleteDoc,
   doc,
   getDocs,
-  setDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase/initFirebase";
 import { Link } from "react-router-dom";
@@ -60,7 +59,11 @@ const WishList = () => {
           className="flex items-center bg-white rounded-md p-2 gap-4 mb-4"
         >
           <div className="w-14 h-14 rounded-full overflow-hidden">
-            <img src={item.imageUrl} alt={item.title + "이미지"} />
+            <img
+              src={item.imageUrl}
+              alt={item.title + "이미지"}
+              className="block h-full object-cover mx-auto scale-125"
+            />
           </div>
           <div className="flex-1 flex justify-between">
             <Link to={`/products/${item.productId}`} className="font-semibold">

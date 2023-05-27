@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ContentContainer from "../../components/common/ContentContainer";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase/initFirebase";
