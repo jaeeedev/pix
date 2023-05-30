@@ -17,7 +17,10 @@ const ProductsPage = () => {
           <ItemSet key={item.productId} data={item} />
         ))}
       </div>
-      <div className="h-4" ref={intersectionRef} />
+      <div
+        className="relative -bottom-10 left-0 w-full h-4"
+        ref={intersectionRef}
+      />
     </ContentContainer>
   );
 };

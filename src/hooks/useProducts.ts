@@ -1,4 +1,4 @@
-import React, { RefObject, useCallback, useEffect, useState } from "react";
+import { RefObject, useCallback, useEffect, useState } from "react";
 import { TItem } from "../types/product";
 import {
   DocumentData,
@@ -15,15 +15,16 @@ import { db } from "../firebase/initFirebase";
 const useProducts = (targetRef: RefObject<HTMLDivElement>) => {
   const [items, setItems] = useState<TItem[]>([]);
   const [lastVisible, setLastVisible] =
-    useState<QueryDocumentSnapshot<DocumentData>>();
-  const [intersection, setIntersection] = useState(false);
+    useState<QueryDocumentSnapshot<DocumentData> | null>(null);
+  const [loading, setLoading] = useState(false);
   const [end, setEnd] = useState(false);
 
   const productsRef = collection(db, "products");
-  const LIMIT = 12;
+  const LIMIT = 8;
 
   const getFirstData = async () => {
     try {
+      setLoading(true);
       const sortQuery = query(
         productsRef,
         orderBy("createdAt", "desc"),
@@ -41,6 +42,7 @@ const useProducts = (targetRef: RefObject<HTMLDivElement>) => {
 
       setLastVisible(productsSnapshot.docs[productsSnapshot.docs.length - 1]);
       setItems(itemArr);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -48,6 +50,9 @@ const useProducts = (targetRef: RefObject<HTMLDivElement>) => {
 
   const getMoreData = useCallback(async () => {
     try {
+      if (loading || !lastVisible) return;
+
+      setLoading(true);
       const nextQuery = query(
         productsRef,
         orderBy("createdAt", "desc"),
@@ -56,8 +61,10 @@ const useProducts = (targetRef: RefObject<HTMLDivElement>) => {
       );
 
       const nextSnapshot = await getDocs(nextQuery);
-      if (nextSnapshot.empty === true) {
+      if (nextSnapshot.empty) {
+        // 가져올 다음 스냅샷이 없으면 리턴 -> 다시 요청하면 계속 여기서 반복됨 -> disconnect로 관찰 중지
         setEnd(true);
+        setLoading(false);
         return;
       }
 
@@ -71,33 +78,31 @@ const useProducts = (targetRef: RefObject<HTMLDivElement>) => {
 
       setItems((prev) => prev.concat(nextArr));
       setLastVisible(nextSnapshot.docs[nextSnapshot.docs.length - 1]);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
-  }, [lastVisible, productsRef]);
+  }, [loading, lastVisible, productsRef]);
 
   useEffect(() => {
     if (!targetRef.current) return;
 
-    const callback: IntersectionObserverCallback = ([entry], observer) => {
-      if (entry.isIntersecting) {
-        setIntersection(true);
-      } else {
-        setIntersection(false);
+    const callback: IntersectionObserverCallback = ([entry]) => {
+      if (entry.isIntersecting && !loading && !end) {
+        getMoreData();
       }
     };
     const observer = new IntersectionObserver(callback);
     observer.observe(targetRef.current);
-  }, [targetRef]);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [targetRef, loading, end]);
 
   useEffect(() => {
     getFirstData();
   }, []);
-
-  useEffect(() => {
-    if (items.length === 0 || end) return;
-    getMoreData();
-  }, [intersection, end]);
 
   return {
     items,
