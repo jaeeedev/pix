@@ -19,7 +19,7 @@ const ItemSet = ({ data }: Props) => {
         <Link to={`/products/${data.productId}`}>
           <img
             loading="lazy"
-            className="block mx-auto h-full object-cover scale-110 drop-shadow-md"
+            className="block w-full h-full object-cover scale-105 drop-shadow-md"
             src={data.imageUrl}
             alt={`${data.title} 이미지`}
           />

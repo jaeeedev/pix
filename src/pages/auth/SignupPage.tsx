@@ -11,8 +11,11 @@ import useGlobalModal from "../../components/common/modal/useGlobalModal";
 import authAtom from "../../recoil/auth/authAtom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { minNicknameLength, maxNicknameLength } from "../../utills/constants";
+import { FirebaseError } from "firebase/app";
+import authErrorCodeMessages from "../../utills/authErrorCodeMessages";
 
 const emailRegex = "[a-zA-Z0-9]+@[a-zA-Z]+.[a-zA-Z]{2,}";
+
 const SignupPage = () => {
   const { setModal } = useGlobalModal();
   const navigate = useNavigate();
@@ -51,10 +54,14 @@ const SignupPage = () => {
           });
         }
       } catch (err) {
-        console.log(err);
-
-        // 회원가입 에러 모달로 출력
-        setModal("회원가입에 실패했습니다.");
+        if (err instanceof FirebaseError && err.code) {
+          console.log(err);
+          setModal(
+            authErrorCodeMessages[err.code] || authErrorCodeMessages.default
+          );
+          return;
+        }
+        setModal(authErrorCodeMessages.default);
       }
     },
     [navigate, setAuthAtom, setModal]

@@ -34,7 +34,9 @@ const Header = () => {
     <div className="sticky top-0 bg-slate-100 shadow-sm z-10">
       <ContentContainer>
         <div className="flex gap-16">
-          <Link to="/">pix</Link>
+          <Link to="/" className="font-bold text-lg">
+            pix
+          </Link>
           <nav className="flex justify-between  grow">
             <div>
               <Link to="/products">products</Link>

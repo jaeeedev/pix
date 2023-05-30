@@ -11,20 +11,9 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRecoilValue } from "recoil";
 import authAtom from "../../recoil/auth/authAtom";
 import { FirebaseError } from "firebase/app";
-
-type LoginErrorCodeMessages = {
-  [key: string]: string;
-  default: string;
-};
+import authErrorCodeMessages from "../../utills/authErrorCodeMessages";
 
 const emailRegex = "[a-zA-Z0-9]+@[a-zA-Z]+.[a-zA-Z]{2,}";
-const loginErrorCodeMessages: LoginErrorCodeMessages = {
-  "auth/user-not-found": "존재하지 않는 이메일입니다.",
-  "auth/wrong-password": "비밀번호가 일치하지 않습니다.",
-  "auth/weak-password": "비밀번호를 6글자 이상으로 지정해주세요.",
-  "auth/invalid-email": "이메일 형식이 올바르지 않습니다.",
-  default: "로그인에 실패했습니다. 잠시 후 실행해주세요",
-};
 
 const LoginPage = () => {
   const { setModal } = useGlobalModal();
@@ -61,9 +50,11 @@ const LoginPage = () => {
         if (err instanceof FirebaseError && err.code) {
           console.log(err);
           setModal(
-            loginErrorCodeMessages[err.code] || loginErrorCodeMessages.default
+            authErrorCodeMessages[err.code] || authErrorCodeMessages.default
           );
+          return;
         }
+        setModal(authErrorCodeMessages.default);
       }
     },
     [navigate, setModal]
