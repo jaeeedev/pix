@@ -5,7 +5,6 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDoc,
   getDocs,
   increment,
   query,
@@ -15,6 +14,7 @@ import {
 import { db } from "../../firebase/initFirebase";
 import { User } from "firebase/auth";
 import { BsFillTrash3Fill } from "react-icons/bs";
+import useGlobalModal from "../common/modal/useGlobalModal";
 
 type Props = {
   data: CartData;
@@ -26,6 +26,7 @@ type UpdateParam = "up" | "down";
 
 const CartItem = ({ data, userInfo, setNeedRefetch }: Props) => {
   const [count, setCount] = useState<number>(data.count);
+  const { setModal } = useGlobalModal();
 
   const updateCount = useCallback(
     async (way: UpdateParam) => {
@@ -39,19 +40,22 @@ const CartItem = ({ data, userInfo, setNeedRefetch }: Props) => {
       const itemSnapshot = await getDocs(itemQuery);
       const itemRef = itemSnapshot.docs[0].ref;
 
-      try {
-        if ((way === "up" && count < 10) || (way === "down" && count > 1)) {
-          const incrementCount = way === "up" ? 1 : -1;
+      if ((way === "up" && count < 10) || (way === "down" && count > 1)) {
+        const incrementCount = way === "up" ? 1 : -1;
+        try {
           await updateDoc(itemRef, {
             count: increment(incrementCount),
           });
-          setCount((prev) => prev + incrementCount);
+        } catch (err) {
+          console.log(err);
+          setModal("수량 변경에 실패했습니다. 잠시 후 다시 시도해주세요.");
+          return;
         }
-      } catch (err) {
-        console.log(err);
+        setCount((prev) => prev + incrementCount);
+        setNeedRefetch((prev) => !prev);
       }
     },
-    [count, data.productId, userInfo]
+    [count, data.productId, setModal, setNeedRefetch, userInfo]
   );
 
   const deleteItem = async () => {

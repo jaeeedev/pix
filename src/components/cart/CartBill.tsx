@@ -1,4 +1,3 @@
-import React from "react";
 import Children from "../../types/children";
 import { CartData } from "../../types/cart";
 

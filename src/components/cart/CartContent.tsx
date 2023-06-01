@@ -1,5 +1,5 @@
 import { DocumentData, collection, getDocs } from "firebase/firestore";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 
 import CartList from "./CartList";
@@ -13,6 +13,10 @@ const CartContent = () => {
   const { userInfo, isLogin } = useRecoilValue(authAtom);
   const [cartData, setCartData] = useState<DocumentData[]>([]);
   const [needRefetch, setNeedRefetch] = useState(false);
+  const [countChange, setCountChange] = useState(false);
+
+  // 초회 페칭하고 저장, 저장된 값 있으면 계속 고정, add, delete 발생 시 리페칭 후 값 저장
+  // delete는 여기서 needRefetch 내려주니까 비슷하게 가면 되는데
 
   const getData = useCallback(async () => {
     try {
@@ -43,8 +47,9 @@ const CartContent = () => {
         cartData={cartData}
         userInfo={userInfo}
         setNeedRefetch={setNeedRefetch}
+        setCountChange={setCountChange}
       />
-      <CartBill cartData={cartData as CartData[]} />
+      <CartBill cartData={cartData as CartData[]} countChange={countChange} />
     </div>
   );
 };
