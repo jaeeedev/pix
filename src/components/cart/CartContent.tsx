@@ -7,16 +7,11 @@ import CartBill from "./CartBill";
 import authAtom from "../../recoil/auth/authAtom";
 import { db } from "../../firebase/initFirebase";
 import { CartData } from "../../types/cart";
+import { useQuery } from "@tanstack/react-query";
 
 const CartContent = () => {
-  /* 여기서 데이터 관리하고 데이터는 밑으로 내리기*/
   const { userInfo, isLogin } = useRecoilValue(authAtom);
-  const [cartData, setCartData] = useState<DocumentData[]>([]);
   const [needRefetch, setNeedRefetch] = useState(false);
-  const [countChange, setCountChange] = useState(false);
-
-  // 초회 페칭하고 저장, 저장된 값 있으면 계속 고정, add, delete 발생 시 리페칭 후 값 저장
-  // delete는 여기서 needRefetch 내려주니까 비슷하게 가면 되는데
 
   const getData = useCallback(async () => {
     try {
@@ -31,25 +26,32 @@ const CartContent = () => {
         cartDataList.push(cartDoc.data());
       });
 
-      setCartData(cartDataList);
+      return cartDataList;
     } catch (err) {
       console.log(err);
     }
   }, [userInfo, isLogin]);
 
+  const { data = [], isLoading } = useQuery({
+    queryFn: getData,
+    queryKey: [userInfo?.uid, "cart"],
+    enabled: !!userInfo?.uid,
+  });
+
   useEffect(() => {
     getData();
   }, [getData, needRefetch]);
 
+  if (isLoading) return <p>로딩중입니다.</p>;
+
   return (
     <div className="flex flex-col gap-8 justify-between md:flex-row">
       <CartList
-        cartData={cartData}
+        cartData={data}
         userInfo={userInfo}
         setNeedRefetch={setNeedRefetch}
-        setCountChange={setCountChange}
       />
-      <CartBill cartData={cartData as CartData[]} countChange={countChange} />
+      <CartBill cartData={data as CartData[]} />
     </div>
   );
 };

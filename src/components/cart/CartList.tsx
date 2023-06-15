@@ -5,6 +5,7 @@ import { DocumentData, deleteDoc, doc } from "firebase/firestore";
 import { User } from "firebase/auth";
 import { Dispatch, SetStateAction } from "react";
 import { db } from "../../firebase/initFirebase";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   cartData: DocumentData[];
@@ -13,6 +14,8 @@ type Props = {
 };
 
 const CartList = ({ cartData, userInfo, setNeedRefetch }: Props) => {
+  const queryClient = useQueryClient();
+
   const deleteAllItem = async () => {
     if (!userInfo) return;
     try {
@@ -24,7 +27,7 @@ const CartList = ({ cartData, userInfo, setNeedRefetch }: Props) => {
     } catch (err) {
       console.log(err);
     } finally {
-      setNeedRefetch((prev) => !prev);
+      queryClient.invalidateQueries([userInfo.uid, "cart"]);
     }
   };
 
@@ -47,7 +50,6 @@ const CartList = ({ cartData, userInfo, setNeedRefetch }: Props) => {
           key={cart.productId}
           data={cart as CartData}
           userInfo={userInfo}
-          setNeedRefetch={setNeedRefetch}
         />
       ))}
     </div>
