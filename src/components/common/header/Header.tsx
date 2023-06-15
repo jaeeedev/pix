@@ -31,7 +31,7 @@ const Header = () => {
   };
 
   return (
-    <div className="sticky top-0 bg-slate-100 shadow-sm z-10">
+    <div className="sticky top-0 bg-slate-800 text-white shadow-sm z-10">
       <ContentContainer>
         <div className="flex gap-16">
           <Link to="/" className="font-bold text-lg">

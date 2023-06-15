@@ -28,17 +28,18 @@ const Profile = () => {
       await updateProfile(auth.currentUser, {
         displayName: changeInputRef.current.value,
       });
-
-      setChangingNickname(false);
-      setModal("닉네임이 변경되었습니다.");
-      setAuthAtom((prev) => {
-        const userCopy = JSON.parse(JSON.stringify(auth.currentUser));
-        return { ...prev, userInfo: userCopy };
-      });
     } catch (err) {
       setModal("닉네임 변경에 실패했습니다.");
       console.log(err);
+      return;
     }
+
+    setChangingNickname(false);
+    setModal("닉네임이 변경되었습니다.");
+    setAuthAtom((prev) => {
+      const userCopy = JSON.parse(JSON.stringify(auth.currentUser));
+      return { ...prev, userInfo: userCopy };
+    });
   }, [setAuthAtom, setModal]);
 
   return (

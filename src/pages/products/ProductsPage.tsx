@@ -7,6 +7,7 @@ import useProducts from "../../hooks/useProducts";
 const ProductsPage = () => {
   const intersectionRef = useRef<HTMLDivElement>(null);
   const { items } = useProducts(intersectionRef);
+
   return (
     <ContentContainer>
       <PageTop>
