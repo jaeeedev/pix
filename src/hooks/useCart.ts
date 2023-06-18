@@ -14,18 +14,17 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../firebase/initFirebase";
-
-type OriginalData = {
-  [key: string]: unknown;
-};
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { TItem } from "../types/product";
 
 const useCart = () => {
   const { userInfo } = useRecoilValue(authAtom);
   const { setModal } = useGlobalModal();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const addCart = useCallback(
-    async (productId: string, originalData: OriginalData) => {
+    async (data: TItem) => {
       if (!userInfo) {
         setModal("로그인 후 이용해주세요.");
         navigate("/login");
@@ -35,7 +34,7 @@ const useCart = () => {
       const cartRef = doc(db, "cart", userInfo.uid);
       const cartQuery = query(
         collection(db, "cart", userInfo.uid, "items"),
-        where("productId", "==", productId)
+        where("productId", "==", data.productId)
       );
 
       const cartSnapshot = await getDocs(cartQuery);
@@ -59,10 +58,9 @@ const useCart = () => {
         }
       } else {
         try {
-          await setDoc(doc(cartRef, "items", productId), {
-            ...originalData,
+          await setDoc(doc(cartRef, "items", data.productId), {
+            ...data,
             count: 1,
-            productId,
           });
 
           setModal("상품이 장바구니에 추가되었습니다.");
@@ -75,7 +73,17 @@ const useCart = () => {
     [navigate, setModal, userInfo]
   );
 
-  return { addCart };
+  const { mutate: addMutate } = useMutation({
+    mutationFn: addCart,
+    onSuccess: () => {
+      return queryClient.invalidateQueries({
+        queryKey: [userInfo?.uid, "cart"],
+        refetchType: "all",
+      });
+    },
+  });
+
+  return { addMutate };
 };
 
 export default useCart;

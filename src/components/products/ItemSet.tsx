@@ -11,7 +11,7 @@ type Props = {
 };
 
 const ItemSet = ({ data }: Props) => {
-  const { addCart } = useCart();
+  const { addMutate } = useCart();
   const { addWish } = useWish();
 
   return (
@@ -37,7 +37,7 @@ const ItemSet = ({ data }: Props) => {
           </div>
           <button
             className="rounded-md p-2 bg-slate-800 text-white"
-            onClick={() => addCart(data.productId, data)}
+            onClick={() => addMutate(data)}
           >
             <BsFillCartFill size={18} />
           </button>

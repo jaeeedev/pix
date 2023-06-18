@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import authAtom from "../../recoil/auth/authAtom";
 import { useRecoilValue } from "recoil";
 import {
@@ -11,12 +11,13 @@ import {
 import { db } from "../../firebase/initFirebase";
 import { Link } from "react-router-dom";
 import useCart from "../../hooks/useCart";
+import { TItem } from "../../types/product";
 
 const WishList = () => {
   const { userInfo } = useRecoilValue(authAtom);
   const [wishlist, setWishlist] = useState<DocumentData[]>([]);
   const [refetch, setRefetch] = useState(false);
-  const { addCart } = useCart();
+  const { addMutate } = useCart();
 
   const getWishList = useCallback(async () => {
     if (!userInfo) return;
@@ -41,10 +42,11 @@ const WishList = () => {
       if (!userInfo) return;
       try {
         await deleteDoc(doc(db, "wish", userInfo.uid, "items", id));
-        setRefetch((prev) => !prev);
       } catch (err) {
         console.log(err);
+        return;
       }
+      setRefetch((prev) => !prev);
     },
     [userInfo]
   );
@@ -70,10 +72,8 @@ const WishList = () => {
               {item.title}
             </Link>
 
-            <div className="flex gap-4">
-              <button onClick={() => addCart(item.productId, item)}>
-                장바구니
-              </button>
+            <div className="flex gap-4 min-w-[100px]">
+              <button onClick={() => addMutate(item as TItem)}>장바구니</button>
               <button onClick={() => deleteWishItem(item.productId)}>
                 삭제
               </button>

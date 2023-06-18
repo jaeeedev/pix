@@ -20,11 +20,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 type Props = {
   data: CartData;
   userInfo: User | null;
+  cartList: CartData[];
 };
 
 type UpdateParam = "up" | "down";
 
-const CartItem = ({ data, userInfo }: Props) => {
+const CartItem = ({ data, userInfo, cartList }: Props) => {
   const { setModal } = useGlobalModal();
 
   const queryClient = useQueryClient();
@@ -74,18 +75,33 @@ const CartItem = ({ data, userInfo }: Props) => {
     if (!userInfo) return;
 
     try {
-      const response = await deleteDoc(
-        doc(db, "cart", userInfo.uid, "items", data.productId)
-      );
-      return response;
+      await deleteDoc(doc(db, "cart", userInfo.uid, "items", data.productId));
     } catch (err) {
       console.log(err);
+      return;
     }
   };
 
   const { mutate: deleteMutate } = useMutation({
     mutationFn: deleteItem,
-    onSuccess: () =>
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: [userInfo?.uid, "cart"] });
+
+      const prevCartList = queryClient.getQueryData([userInfo?.uid, "cart"]);
+      const targetIndex = cartList.findIndex(
+        (cart) => cart.productId === data.productId
+      );
+      const alterList = [...cartList];
+      alterList.splice(targetIndex, 1);
+
+      queryClient.setQueryData([userInfo?.uid, "cart"], alterList);
+
+      return { prevCartList };
+    },
+    onError: (err, val, context) => {
+      queryClient.setQueryData([userInfo?.uid, "cart"], context?.prevCartList);
+    },
+    onSettled: () =>
       queryClient.invalidateQueries({
         queryKey: [userInfo?.uid, "cart"],
       }),
