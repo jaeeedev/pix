@@ -107,6 +107,7 @@ const useProducts = (targetRef: RefObject<HTMLDivElement>) => {
   return {
     items,
     setItems,
+    getFirstData,
   };
 };
 

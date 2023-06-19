@@ -9,7 +9,6 @@ import monetAvif from "../../assets/image/monet.avif";
 import monetWebp from "../../assets/image/monet.webp";
 import monetPng from "../../assets/image/monet.png";
 import { Link } from "react-router-dom";
-
 const MainPage = () => {
   const productsRef = collection(db, "products");
   // 상품 4개 가져오기

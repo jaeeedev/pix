@@ -1,11 +1,10 @@
 import CartItem from "./CartItem";
 import { CartData } from "../../types/cart";
 import { BsFillTrash3Fill } from "react-icons/bs";
-import { DocumentData, deleteDoc, doc } from "firebase/firestore";
+import { DocumentData } from "firebase/firestore";
 import { User } from "firebase/auth";
 import { Dispatch, SetStateAction } from "react";
-import { db } from "../../firebase/initFirebase";
-import { useQueryClient } from "@tanstack/react-query";
+import useCart from "../../hooks/useCart";
 
 type Props = {
   cartData: DocumentData[];
@@ -14,27 +13,12 @@ type Props = {
 };
 
 const CartList = ({ cartData, userInfo }: Props) => {
-  const queryClient = useQueryClient();
-
-  const deleteAllItem = async () => {
-    if (!userInfo) return;
-    try {
-      for (const cart of cartData) {
-        await deleteDoc(
-          doc(db, "cart", userInfo?.uid, "items", cart.productId)
-        );
-      }
-    } catch (err) {
-      console.log(err);
-    } finally {
-      queryClient.invalidateQueries([userInfo.uid, "cart"]);
-    }
-  };
+  const { allDeleteMutate } = useCart();
 
   return (
     <div className="flex-[2.5]">
       <div className="flex gap-4 justify-between items-center py-4 font-bold text-lg text-slate-400">
-        <button onClick={deleteAllItem}>
+        <button onClick={() => allDeleteMutate(cartData)}>
           <BsFillTrash3Fill className="active:text-slate-600" />
         </button>
         <span className="flex-1">product</span>

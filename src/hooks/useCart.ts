@@ -4,7 +4,9 @@ import { useRecoilValue } from "recoil";
 import useGlobalModal from "../components/common/modal/useGlobalModal";
 import { useNavigate } from "react-router-dom";
 import {
+  DocumentData,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   increment,
@@ -83,7 +85,43 @@ const useCart = () => {
     },
   });
 
-  return { addMutate };
+  const deleteAllItem = async (cartData: DocumentData[] | TItem[]) => {
+    if (!userInfo) return;
+    try {
+      for (const cart of cartData) {
+        await deleteDoc(
+          doc(db, "cart", userInfo?.uid, "items", cart.productId)
+        );
+      }
+    } catch (err) {
+      console.log(err);
+      throw new Error("삭제에 실패했습니다.");
+    }
+  };
+
+  const { mutate: allDeleteMutate } = useMutation({
+    mutationFn: deleteAllItem,
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: [userInfo?.uid, "cart"] });
+
+      const prevCartList = queryClient.getQueryData([userInfo?.uid, "cart"]);
+
+      queryClient.setQueryData([userInfo?.uid, "cart"], []);
+
+      return { prevCartList };
+    },
+    onError: (err, val, context) => {
+      setModal("삭제에 실패했습니다. 잠시 후 다시 실행해주세요.");
+      console.log(err);
+      queryClient.setQueryData([userInfo?.uid, "cart"], context?.prevCartList);
+    },
+    onSettled: () =>
+      queryClient.invalidateQueries({
+        queryKey: [userInfo?.uid, "cart"],
+      }),
+  });
+
+  return { addMutate, allDeleteMutate };
 };
 
 export default useCart;
