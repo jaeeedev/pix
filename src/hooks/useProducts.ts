@@ -11,16 +11,45 @@ import {
   startAfter,
 } from "firebase/firestore";
 import { db } from "../firebase/initFirebase";
+import { LIMIT } from "../utills/constants";
+import { useQueryClient } from "@tanstack/react-query";
 
-const useProducts = (targetRef: RefObject<HTMLDivElement>) => {
+type Props = {
+  targetRef?: RefObject<HTMLDivElement>;
+};
+
+const useProducts = ({ targetRef }: Props) => {
   const [items, setItems] = useState<TItem[]>([]);
   const [lastVisible, setLastVisible] =
     useState<QueryDocumentSnapshot<DocumentData> | null>(null);
   const [loading, setLoading] = useState(false);
   const [end, setEnd] = useState(false);
 
+  const queryClient = useQueryClient();
   const productsRef = collection(db, "products");
-  const LIMIT = 8;
+
+  // const getData = async ({ pageParam = 1 }) => {
+  //   const productQuery = lastVisible
+  //     ? query(
+  //         productsRef,
+  //         orderBy("createdAt", "desc"),
+  //         startAfter(lastVisible),
+  //         limit(pageParam)
+  //       )
+  //     : query(productsRef, orderBy("createdAt", "desc"), limit(pageParam));
+
+  //   // const productsSnapshot = await getDocs(productQuery);
+
+  //   // const itemArr = productsSnapshot.docs.map((doc) => {
+  //   //   return {
+  //   //     productId: doc.id,
+  //   //     ...(doc.data() as Omit<TItem, "productId">),
+  //   //     createdAt: doc.data().createdAt.toDate(),
+  //   //   };
+  //   // });
+
+  //   return await getDocs(productQuery);
+  // };
 
   const getFirstData = async () => {
     try {
@@ -43,9 +72,18 @@ const useProducts = (targetRef: RefObject<HTMLDivElement>) => {
       setLastVisible(productsSnapshot.docs[productsSnapshot.docs.length - 1]);
       setItems(itemArr);
       setLoading(false);
+
+      return itemArr;
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const prefetchData = async () => {
+    await queryClient.prefetchQuery({
+      queryKey: ["products"],
+      queryFn: getFirstData,
+    });
   };
 
   const getMoreData = useCallback(async () => {
@@ -85,7 +123,7 @@ const useProducts = (targetRef: RefObject<HTMLDivElement>) => {
   }, [loading, lastVisible, productsRef]);
 
   useEffect(() => {
-    if (!targetRef.current) return;
+    if (!targetRef?.current) return;
 
     const callback: IntersectionObserverCallback = ([entry]) => {
       if (entry.isIntersecting && !loading && !end) {
@@ -108,6 +146,7 @@ const useProducts = (targetRef: RefObject<HTMLDivElement>) => {
     items,
     setItems,
     getFirstData,
+    prefetchData,
   };
 };
 
