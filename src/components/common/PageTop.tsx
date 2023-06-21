@@ -5,6 +5,10 @@ const PageTop = ({ children }: Children) => {
   return <div className={twMerge("mt-12 mb-4")}>{children}</div>;
 };
 
+const Divide = ({ children }: Children) => {
+  return <div className="flex justify-between items-center">{children}</div>;
+};
+
 const Title = ({ children, ...props }: Children) => {
   return (
     <h2 {...props} className="text-3xl font-bold mb-2">
@@ -21,3 +25,4 @@ export default PageTop;
 
 PageTop.Title = Title;
 PageTop.Description = Description;
+PageTop.Divide = Divide;

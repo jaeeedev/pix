@@ -9,12 +9,14 @@ import monetAvif from "../../assets/image/monet.avif";
 import monetWebp from "../../assets/image/monet.webp";
 import monetPng from "../../assets/image/monet.png";
 import { Link } from "react-router-dom";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { LIMIT } from "../../utills/constants";
+import Skeleton from "../../components/products/Skeleton";
+
 const MainPage = () => {
   const productsRef = collection(db, "products");
-  // 상품 4개 가져오기
-  const [newProduct, setNewProduct] = useState<TItem[]>([]);
+  const MAIN_LIMIT = 4;
 
-  const LIMIT = 4;
   const getData = async () => {
     try {
       const sortQuery = query(
@@ -31,16 +33,27 @@ const MainPage = () => {
           createdAt: doc.data().createdAt.toDate(),
         } as TItem;
       });
-      setNewProduct(itemArr);
+      return productsSnapshot;
     } catch (err) {
       console.log(err);
       return;
     }
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
+  const { data, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: getData,
+    select: (data) => {
+      const items = data?.docs.map((doc) => {
+        return {
+          productId: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt.toDate(),
+        } as TItem;
+      });
+      return items;
+    },
+  });
 
   return (
     <div>
@@ -73,14 +86,20 @@ const MainPage = () => {
             </PageTop.Description>
           </PageTop>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {newProduct.map((product) => {
-              return (
-                <div className="relative" key={product.productId}>
-                  <ItemSet data={product} />
-                  <ItemSet.Label>NEW</ItemSet.Label>
-                </div>
-              );
-            })}
+            {isLoading &&
+              Array.from({ length: MAIN_LIMIT }).map((el, i) => (
+                <Skeleton key={i} />
+              ))}
+            {!isLoading &&
+              data &&
+              data.slice(0, MAIN_LIMIT).map((product) => {
+                return (
+                  <div className="relative" key={product.productId}>
+                    <ItemSet data={product} />
+                    <ItemSet.Label>NEW</ItemSet.Label>
+                  </div>
+                );
+              })}
           </div>
         </div>
       </ContentContainer>

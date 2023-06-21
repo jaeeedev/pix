@@ -36,7 +36,7 @@ const HeaderMenuBoxList = ({ setOpen }: Props) => {
         className="fixed left-0 top-0 bg-slate-400/50 w-screen h-screen backdrop-blur-[2px]"
         onClick={closeBox}
       />
-      <ul className="absolute right-2 top-6 p-4 bg-white rounded-md shadow-md min-w-[150px]">
+      <ul className="absolute right-2 top-6 p-4 bg-white rounded-md shadow-md min-w-[150px] text-black">
         <button className="absolute right-4 top-4" onClick={closeBox}>
           <BiX size={20} />
         </button>
