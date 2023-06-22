@@ -18,7 +18,7 @@ const ProductInfo = ({ currentData, productId }: Props) => {
   }, []);
 
   const { addMutate } = useCart();
-  const { addWish } = useWish();
+  const { addWishMutate } = useWish();
 
   return (
     <div className="sm:flex gap-4 sm:mb-4">
@@ -53,7 +53,7 @@ const ProductInfo = ({ currentData, productId }: Props) => {
             className="flex-1 p-4 border-solid border border-slate-200 rounded-md active:bg-slate-200"
             onClick={() => {
               if (!currentData) return;
-              addWish(productId, currentData);
+              addWishMutate(currentData);
             }}
           >
             wish

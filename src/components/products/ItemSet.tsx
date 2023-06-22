@@ -12,7 +12,7 @@ type Props = {
 
 const ItemSet = ({ data }: Props) => {
   const { addMutate } = useCart();
-  const { addWish } = useWish();
+  const { addWishMutate } = useWish();
 
   return (
     <div className="rounded-xl overflow-hidden border border-slate-300 relative h-full">
@@ -45,7 +45,9 @@ const ItemSet = ({ data }: Props) => {
       </div>
       <button
         className="absolute right-2 top-2 rounded-full overflow-hidden text-slate-500 p-2 active:text-red-400 active:bg-red-100"
-        onClick={() => addWish(data.productId, data)}
+        onClick={() => {
+          addWishMutate(data);
+        }}
       >
         <AiOutlineHeart size={20} />
       </button>

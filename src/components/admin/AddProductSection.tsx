@@ -1,5 +1,6 @@
 import {
   ChangeEvent,
+  DragEventHandler,
   FormEvent,
   SyntheticEvent,
   useCallback,
@@ -62,17 +63,17 @@ const AddProductSection = () => {
     [uploadThumbnail]
   );
 
-  const handleDragEnter = (e: DragEvent) => {
+  const handleDragEnter: DragEventHandler<HTMLInputElement> = (e) => {
     e.stopPropagation();
     e.preventDefault();
   };
 
-  const handleDragOver = (e: DragEvent) => {
+  const handleDragOver: DragEventHandler<HTMLInputElement> = (e) => {
     e.stopPropagation();
     e.preventDefault();
   };
 
-  const handleDrop = async (e: DragEvent) => {
+  const handleDrop: DragEventHandler<HTMLInputElement> = async (e) => {
     e.stopPropagation();
     e.preventDefault();
 
