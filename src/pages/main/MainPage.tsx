@@ -40,8 +40,8 @@ const MainPage = () => {
     }
   };
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["products"],
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["products", "main"],
     queryFn: getData,
     select: (data) => {
       const items = data?.docs.map((doc) => {

@@ -28,29 +28,6 @@ const useProducts = ({ targetRef }: Props) => {
   const queryClient = useQueryClient();
   const productsRef = collection(db, "products");
 
-  // const getData = async ({ pageParam = 1 }) => {
-  //   const productQuery = lastVisible
-  //     ? query(
-  //         productsRef,
-  //         orderBy("createdAt", "desc"),
-  //         startAfter(lastVisible),
-  //         limit(pageParam)
-  //       )
-  //     : query(productsRef, orderBy("createdAt", "desc"), limit(pageParam));
-
-  //   // const productsSnapshot = await getDocs(productQuery);
-
-  //   // const itemArr = productsSnapshot.docs.map((doc) => {
-  //   //   return {
-  //   //     productId: doc.id,
-  //   //     ...(doc.data() as Omit<TItem, "productId">),
-  //   //     createdAt: doc.data().createdAt.toDate(),
-  //   //   };
-  //   // });
-
-  //   return await getDocs(productQuery);
-  // };
-
   const getFirstData = async () => {
     try {
       setLoading(true);
@@ -77,13 +54,6 @@ const useProducts = ({ targetRef }: Props) => {
     } catch (err) {
       console.log(err);
     }
-  };
-
-  const prefetchData = async () => {
-    await queryClient.prefetchQuery({
-      queryKey: ["products"],
-      queryFn: getFirstData,
-    });
   };
 
   const getMoreData = useCallback(async () => {
@@ -146,7 +116,6 @@ const useProducts = ({ targetRef }: Props) => {
     items,
     setItems,
     getFirstData,
-    prefetchData,
   };
 };
 
