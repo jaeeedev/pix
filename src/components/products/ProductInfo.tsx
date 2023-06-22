@@ -17,7 +17,7 @@ const ProductInfo = ({ currentData, productId }: Props) => {
     setCount((prev) => Math.min(10, prev + 1));
   }, []);
 
-  const { addCart } = useCart();
+  const { addMutate } = useCart();
   const { addWish } = useWish();
 
   return (
@@ -26,7 +26,7 @@ const ProductInfo = ({ currentData, productId }: Props) => {
         <img
           src={currentData?.imageUrl}
           alt={currentData?.title + " 이미지"}
-          className="block h-full object-cover mx-auto drop-shadow-md transition duration-150 hover:scale-105"
+          className="block h-[300px] object-cover mx-auto drop-shadow-md transition duration-150 hover:scale-105"
         />
       </div>
 
@@ -62,7 +62,13 @@ const ProductInfo = ({ currentData, productId }: Props) => {
             className="flex-1 p-4 bg-slate-800 border-solid border border-slate-800 text-white rounded-md"
             onClick={() => {
               if (!currentData) return;
-              addCart(productId, currentData);
+
+              const cartItemData = {
+                ...currentData,
+                productId,
+              };
+
+              addMutate(cartItemData);
             }}
           >
             cart
