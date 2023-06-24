@@ -17,7 +17,7 @@ const ProductsPage = () => {
     if (intersecting && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [intersecting]);
+  }, [intersecting, hasNextPage]);
 
   return (
     <ContentContainer>
@@ -34,7 +34,7 @@ const ProductsPage = () => {
             .map((item) => <ItemSet key={item.productId} data={item} />)}
       </div>
       <div
-        className="relative -bottom-10 left-0 w-full h-4"
+        className="relative w-full h-4 bg-slate-200 opacity-0"
         ref={intersectionRef}
       />
     </ContentContainer>
