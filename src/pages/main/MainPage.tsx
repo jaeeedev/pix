@@ -9,7 +9,7 @@ import monetAvif from "../../assets/image/monet.avif";
 import monetWebp from "../../assets/image/monet.webp";
 import monetPng from "../../assets/image/monet.png";
 import { Link } from "react-router-dom";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { useQueryClient, useQuery, InfiniteData } from "@tanstack/react-query";
 import { LIMIT } from "../../utills/constants";
 import Skeleton from "../../components/products/Skeleton";
 
@@ -17,6 +17,12 @@ const MainPage = () => {
   const productsRef = collection(db, "products");
   const MAIN_LIMIT = 4;
 
+  const queryClient = useQueryClient();
+  const cacheData = (
+    queryClient.getQueryData(["products"]) as InfiniteData<TItem[]>
+  )?.pages
+    .map((page) => page)
+    .flat();
   const getData = async () => {
     try {
       const sortQuery = query(
@@ -40,9 +46,15 @@ const MainPage = () => {
     }
   };
 
-  const { data = [], isLoading } = useQuery({
+  const {
+    data = cacheData || [],
+    isLoading,
+    fetchStatus,
+    status,
+  } = useQuery({
     queryKey: ["products", "main"],
     queryFn: getData,
+    enabled: !cacheData,
     select: (data) => {
       const items = data?.docs.map((doc) => {
         return {
@@ -86,11 +98,12 @@ const MainPage = () => {
             </PageTop.Description>
           </PageTop>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {isLoading &&
+            {fetchStatus === "fetching" &&
+              status === "loading" &&
               Array.from({ length: MAIN_LIMIT }).map((el, i) => (
                 <Skeleton key={i} />
               ))}
-            {!isLoading &&
+            {(fetchStatus !== "fetching" || status !== "loading") &&
               data &&
               data.slice(0, MAIN_LIMIT).map((product) => {
                 return (
