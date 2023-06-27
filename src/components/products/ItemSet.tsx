@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { BsFillCartFill } from "react-icons/bs";
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { AiOutlineHeart } from "react-icons/ai";
 import { TItem } from "../../types/product";
 import useCart from "../../hooks/useCart";
 import useWish from "../../hooks/useWish";
