@@ -8,12 +8,14 @@ import { useState } from "react";
 import { db, storage } from "../firebase/initFirebase";
 import { addDoc, collection } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
+import { useQueryClient } from "@tanstack/react-query";
 
 type UploadStatus = "yet" | "progress" | "end";
 
 const useUpload = () => {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>("yet");
+  const queryClient = useQueryClient();
 
   const handleUpload = async (file: File, target: HTMLFormElement) => {
     setUploadProgress(0);
@@ -58,6 +60,10 @@ const useUpload = () => {
             if (response) console.log("상품 등록 완료");
             setUploadStatus("end");
             target.reset();
+            queryClient.invalidateQueries({
+              queryKey: ["products"],
+              refetchType: "all",
+            });
           } catch (err) {
             console.log(err);
             setUploadStatus("yet");
