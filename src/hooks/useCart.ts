@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import authAtom from "../recoil/auth/authAtom";
 import { useRecoilValue } from "recoil";
 import useGlobalModal from "../components/common/modal/useGlobalModal";
@@ -110,7 +110,7 @@ const useCart = () => {
 
       return { prevCartList };
     },
-    onError: (err, val, context) => {
+    onError: (err, _, context) => {
       setModal("삭제에 실패했습니다. 잠시 후 다시 실행해주세요.");
       console.log(err);
       queryClient.setQueryData([userInfo?.uid, "cart"], context?.prevCartList);

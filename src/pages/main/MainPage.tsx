@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import ContentContainer from "../../components/common/ContentContainer";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../../firebase/initFirebase";
@@ -32,13 +31,6 @@ const MainPage = () => {
       );
       const productsSnapshot = await getDocs(sortQuery);
 
-      const itemArr = productsSnapshot.docs.map((doc) => {
-        return {
-          productId: doc.id,
-          ...doc.data(),
-          createdAt: doc.data().createdAt.toDate(),
-        } as TItem;
-      });
       return productsSnapshot;
     } catch (err) {
       console.log(err);
@@ -48,7 +40,6 @@ const MainPage = () => {
 
   const {
     data = cacheData || [],
-    isLoading,
     fetchStatus,
     status,
   } = useQuery({
@@ -100,7 +91,7 @@ const MainPage = () => {
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {fetchStatus === "fetching" &&
               status === "loading" &&
-              Array.from({ length: MAIN_LIMIT }).map((el, i) => (
+              Array.from({ length: MAIN_LIMIT }).map((_, i) => (
                 <Skeleton key={i} />
               ))}
             {(fetchStatus !== "fetching" || status !== "loading") &&

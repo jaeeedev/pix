@@ -1,4 +1,3 @@
-import React from "react";
 import { useRecoilValue } from "recoil";
 import useGlobalModal from "../components/common/modal/useGlobalModal";
 import authAtom from "../recoil/auth/authAtom";

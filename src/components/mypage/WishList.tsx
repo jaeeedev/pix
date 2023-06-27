@@ -1,13 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import authAtom from "../../recoil/auth/authAtom";
 import { useRecoilValue } from "recoil";
-import {
-  DocumentData,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-} from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/initFirebase";
 import { Link } from "react-router-dom";
 import useCart from "../../hooks/useCart";

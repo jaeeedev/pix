@@ -2,16 +2,16 @@ import { useEffect, useRef } from "react";
 import ContentContainer from "../../components/common/ContentContainer";
 import PageTop from "../../components/common/PageTop";
 import ItemSet from "../../components/products/ItemSet";
-import useTest from "../../hooks/useTest";
 import useIntersection from "../../hooks/useIntersection";
 import { LIMIT } from "../../utills/constants";
 import Skeleton from "../../components/products/Skeleton";
+import useProducts from "../../hooks/useProducts";
 
 const ProductsPage = () => {
   const intersectionRef = useRef<HTMLDivElement>(null);
   const intersecting = useIntersection(intersectionRef);
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, isLoading } =
-    useTest();
+    useProducts();
 
   useEffect(() => {
     if (intersecting && hasNextPage && !isFetchingNextPage) {
@@ -26,7 +26,7 @@ const ProductsPage = () => {
       </PageTop>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {isLoading &&
-          Array.from({ length: LIMIT }).map((el, i) => <Skeleton key={i} />)}
+          Array.from({ length: LIMIT }).map((_, i) => <Skeleton key={i} />)}
         {!isLoading &&
           data?.pages &&
           data?.pages

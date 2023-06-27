@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useCallback, useState } from "react";
+import { useCallback } from "react";
 import { CartData } from "../../types/cart";
 import { Link } from "react-router-dom";
 import {
@@ -98,7 +98,7 @@ const CartItem = ({ data, userInfo, cartList }: Props) => {
 
       return { prevCartList };
     },
-    onError: (err, val, context) => {
+    onError: (_1, _2, context) => {
       queryClient.setQueryData([userInfo?.uid, "cart"], context?.prevCartList);
     },
     onSettled: () =>

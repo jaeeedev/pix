@@ -1,6 +1,5 @@
 import ContentContainer from "../../components/common/ContentContainer";
 import PageTop from "../../components/common/PageTop";
-
 import Profile from "../../components/mypage/Profile";
 import WishList from "../../components/mypage/WishList";
 

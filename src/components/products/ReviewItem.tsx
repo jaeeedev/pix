@@ -1,4 +1,3 @@
-import React from "react";
 import type { Review } from "../../types/review";
 import dayjs from "dayjs";
 

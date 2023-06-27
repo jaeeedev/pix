@@ -1,4 +1,3 @@
-import React from "react";
 import { TItem } from "../../types/product";
 import { BiX } from "react-icons/bi";
 

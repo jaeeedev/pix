@@ -1,11 +1,11 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import authAtom from "../../recoil/auth/authAtom";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { auth } from "../../firebase/initFirebase";
 
 const AuthObserver = () => {
-  const [loginState, setLoginState] = useRecoilState(authAtom);
+  const setLoginState = useSetRecoilState(authAtom);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {

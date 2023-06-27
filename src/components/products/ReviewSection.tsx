@@ -2,13 +2,7 @@ import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import PageTop from "../common/PageTop";
 import { useRecoilValue } from "recoil";
 import authAtom from "../../recoil/auth/authAtom";
-import {
-  DocumentData,
-  collection,
-  doc,
-  getDocs,
-  setDoc,
-} from "firebase/firestore";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { db } from "../../firebase/initFirebase";
 import { useParams } from "react-router-dom";
 import ReviewItem from "./ReviewItem";
@@ -17,7 +11,7 @@ import type { Review } from "../../types/review";
 const ReviewSection = () => {
   const { id: productId = "" } = useParams();
   const { userInfo } = useRecoilValue(authAtom);
-  const [reviewData, setReviewData] = useState<DocumentData[]>([]);
+  const [reviewData, setReviewData] = useState<Review[]>([]);
   const [refetch, setRefetch] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -28,7 +22,7 @@ const ReviewSection = () => {
       const reviewRef = collection(db, "reviews", productId, "review");
       const reviewSnapshot = await getDocs(reviewRef);
 
-      const tempReviewData: DocumentData[] = reviewSnapshot.docs.map((rv) =>
+      const tempReviewData: Review[] = reviewSnapshot.docs.map((rv) =>
         rv.data()
       );
 
@@ -60,6 +54,7 @@ const ReviewSection = () => {
       });
 
       setRefetch((prev) => !prev);
+      if (!textareaRef.current) return;
       textareaRef.current.value = "";
     } catch (err) {
       console.log(err);
@@ -74,7 +69,7 @@ const ReviewSection = () => {
       <div className="p-4 border border-solid border-slate-200 rounded-md">
         <ul>
           {reviewData.map((review) => (
-            <ReviewItem key={review.uid} data={review as Review} />
+            <ReviewItem key={review.uid} data={review} />
           ))}
         </ul>
 
