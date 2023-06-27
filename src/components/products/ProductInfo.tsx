@@ -53,7 +53,8 @@ const ProductInfo = ({ currentData, productId }: Props) => {
             className="flex-1 p-4 border-solid border border-slate-200 rounded-md active:bg-slate-200"
             onClick={() => {
               if (!currentData) return;
-              addWishMutate(currentData);
+              const wishData = { ...currentData, productId };
+              addWishMutate(wishData);
             }}
           >
             wish
