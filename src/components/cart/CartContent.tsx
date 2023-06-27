@@ -32,7 +32,11 @@ const CartContent = () => {
     }
   }, [userInfo, isLogin]);
 
-  const { data = [], isLoading } = useQuery({
+  const {
+    data = [],
+    status,
+    fetchStatus,
+  } = useQuery({
     queryFn: getData,
     queryKey: [userInfo?.uid, "cart"],
     enabled: !!userInfo?.uid,
@@ -42,7 +46,10 @@ const CartContent = () => {
     getData();
   }, [getData, needRefetch]);
 
-  if (isLoading) return <p>로딩중입니다.</p>;
+  if (!userInfo) return <div>로그인 후 사용할 수 있습니다.</div>;
+
+  if (status === "loading" && fetchStatus === "fetching")
+    return <p>로딩중입니다.</p>;
 
   return (
     <div className="flex flex-col gap-8 justify-between md:flex-row">
