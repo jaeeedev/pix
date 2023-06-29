@@ -48,11 +48,11 @@ const CartItem = ({ data, userInfo, cartList }: Props) => {
       ) {
         const incrementCount = info.way === "up" ? 1 : -1;
         try {
-          const response = await updateDoc(itemRef, {
+          await updateDoc(itemRef, {
             count: increment(incrementCount),
           });
 
-          return response;
+          return info;
         } catch (err) {
           console.log(err);
           setModal("수량 변경에 실패했습니다. 잠시 후 다시 시도해주세요.");
@@ -65,7 +65,33 @@ const CartItem = ({ data, userInfo, cartList }: Props) => {
 
   const { mutate: updateMutate } = useMutation({
     mutationFn: updateCount,
-    onSuccess: () =>
+    onMutate: async (info) => {
+      await queryClient.cancelQueries({ queryKey: [userInfo?.uid, "cart"] });
+
+      const prevCartList = queryClient.getQueryData([userInfo?.uid, "cart"]);
+      const targetIndex = cartList.findIndex(
+        (cart) => cart.productId === data.productId
+      );
+      const alterList = [...cartList];
+
+      const prevCount = info.currentCount;
+      if (
+        (info.way === "up" && info.currentCount < 10) ||
+        (info.way === "down" && info.currentCount > 1)
+      ) {
+        const updateCount = info.way === "up" ? prevCount + 1 : prevCount - 1;
+        alterList[targetIndex].count = updateCount;
+
+        queryClient.setQueryData([userInfo?.uid, "cart"], alterList);
+      }
+      return { prevCartList };
+    },
+    onError: (err, _, context) => {
+      console.log(err);
+      setModal("오류가 발생했습니다.");
+      queryClient.setQueryData([userInfo?.uid, "cart"], context?.prevCartList);
+    },
+    onSettled: () =>
       queryClient.invalidateQueries({
         queryKey: [userInfo?.uid, "cart"],
       }),
