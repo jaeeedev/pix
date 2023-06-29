@@ -22,6 +22,8 @@
 
 - products 페이지
 
+  ![pix-product](https://github.com/jaeeedev/portfolio_next/assets/72128840/a3ae4a52-3905-419f-a9f1-159372a8ca91)
+
   - 상품 불러오기(무한스크롤 적용)
   - 위시리스트 추가하기
   - 장바구니 추가하기
@@ -32,7 +34,8 @@
   - 장바구니 추가하기, 이미 담은 상품이면 수량만 업데이트
   - 리뷰 작성하기(미완성)
 
-- cart 페이지
+- cart 페이지  
+  ![pix-cart](https://github.com/jaeeedev/portfolio_next/assets/72128840/a5f64260-7952-4135-8ff5-ae96a7f28742)
 
   - 제품 장바구니에서 삭제하기, 낙관적 업데이트 적용
   - 수량 변경
@@ -46,12 +49,22 @@
 
 - 로그인,회원가입 페이지
 
+  ![pix-signup](https://github.com/jaeeedev/portfolio_next/assets/72128840/730f639d-8737-4dd3-9f5d-2f0e8e5c3855)
+
   - 로그인
   - 회원가입
 
 - 어드민
-  - 상품 추가 기능
-  - 상품 이미지 드래그, 업로드 기능
+
+  ```
+  id: admin@test.com
+  pw: admin1234
+  ```
+
+  ![pix-admin](https://github.com/jaeeedev/portfolio_next/assets/72128840/2904af4b-b085-4d6c-b472-93295b9943fc)
+
+- 상품 추가 기능
+- 상품 이미지 드래그, 업로드 기능
 
 ## 신경썼던 것
 
