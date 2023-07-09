@@ -22,7 +22,7 @@
 
 - products 페이지
 
-  ![pix-product](https://github.com/jaeeedev/portfolio_next/assets/72128840/a3ae4a52-3905-419f-a9f1-159372a8ca91)
+  ![pix-product](https://github.com/jaeeedev/pix/assets/72128840/23a9532f-09ce-447c-b995-6574bb47d33a)
 
   - 상품 불러오기(무한스크롤 적용)
   - 위시리스트 추가하기
@@ -30,12 +30,14 @@
 
 - product 페이지(제품상세 페이지)
 
+  ![pix-detail](https://github.com/jaeeedev/pix/assets/72128840/2eb58d13-5b58-49bb-8190-e8fffe0b9058)
+
   - 위시리스트 추가하기
   - 장바구니 추가하기, 이미 담은 상품이면 수량만 업데이트
   - 리뷰 작성하기(미완성)
 
 - cart 페이지  
-  ![pix-cart](https://github.com/jaeeedev/portfolio_next/assets/72128840/a5f64260-7952-4135-8ff5-ae96a7f28742)
+   ![pix-cart](https://github.com/jaeeedev/pix/assets/72128840/afa23464-8c75-4700-bc5a-739ee15503ab)
 
   - 제품 장바구니에서 삭제하기(낙관적 업데이트)
   - 수량 변경(낙관적 업데이트)
@@ -49,10 +51,10 @@
 
 - 로그인,회원가입 페이지
 
-  ![pix-signup](https://github.com/jaeeedev/portfolio_next/assets/72128840/730f639d-8737-4dd3-9f5d-2f0e8e5c3855)
+  ![pix-signup](https://github.com/jaeeedev/pix/assets/72128840/03171917-6b4b-4578-8ada-93674c30f1df)
 
-  - 로그인
-  - 회원가입
+- 로그인
+- 회원가입
 
 - 어드민
 
@@ -61,7 +63,7 @@
   pw: admin1234
   ```
 
-  ![pix-admin](https://github.com/jaeeedev/portfolio_next/assets/72128840/2904af4b-b085-4d6c-b472-93295b9943fc)
+  ![pix-admin](https://github.com/jaeeedev/pix/assets/72128840/2ff086de-a71b-4f1a-88a7-46a270eb328e)
 
 - 상품 추가 기능
 - 상품 이미지 드래그, 업로드 기능
