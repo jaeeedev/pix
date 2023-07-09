@@ -53,8 +53,8 @@
 
   ![pix-signup](https://github.com/jaeeedev/pix/assets/72128840/03171917-6b4b-4578-8ada-93674c30f1df)
 
-- 로그인
-- 회원가입
+  - 로그인
+  - 회원가입
 
 - 어드민
 
@@ -65,8 +65,8 @@
 
   ![pix-admin](https://github.com/jaeeedev/pix/assets/72128840/2ff086de-a71b-4f1a-88a7-46a270eb328e)
 
-- 상품 추가 기능
-- 상품 이미지 드래그, 업로드 기능
+  - 상품 추가 기능
+  - 상품 이미지 드래그, 업로드 기능
 
 ## 신경썼던 것
 
