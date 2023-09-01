@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import authAtom from "../recoil/auth/authAtom";
 import { useRecoilValue } from "recoil";
 import useGlobalModal from "../components/common/modal/useGlobalModal";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   DocumentData,
   collection,
@@ -18,11 +18,15 @@ import {
 import { db } from "../firebase/initFirebase";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TItem } from "../types/product";
+import { FirebaseError } from "firebase/app";
+import useWish from "./useWish";
 
 const useCart = () => {
+  const { deleteWishMutate } = useWish();
   const { userInfo } = useRecoilValue(authAtom);
   const { setModal } = useGlobalModal();
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
 
   const addCart = useCallback(
@@ -33,42 +37,54 @@ const useCart = () => {
         return;
       }
 
-      const cartRef = doc(db, "cart", userInfo.uid);
-      const cartQuery = query(
-        collection(db, "cart", userInfo.uid, "items"),
-        where("productId", "==", data.productId)
-      );
+      try {
+        const cartRef = doc(db, "cart", userInfo.uid);
+        const cartQuery = query(
+          collection(db, "cart", userInfo.uid, "items"),
+          where("productId", "==", data.productId)
+        );
 
-      const cartSnapshot = await getDocs(cartQuery);
-      const isExist = cartSnapshot.docs.length !== 0;
+        const cartSnapshot = await getDocs(cartQuery);
+        const isExist = cartSnapshot.docs.length !== 0;
 
-      if (isExist) {
-        try {
-          const duplicateCheck = confirm(
-            "이미 추가된 상품입니다. 추가하시겠습니까?"
-          );
+        if (isExist) {
+          try {
+            const duplicateCheck = confirm(
+              "이미 추가된 상품입니다. 추가하시겠습니까?"
+            );
 
-          if (!duplicateCheck) return;
+            if (!duplicateCheck) return;
 
-          await updateDoc(cartSnapshot.docs[0].ref, {
-            count: increment(1),
-          });
+            await updateDoc(cartSnapshot.docs[0].ref, {
+              count: increment(1),
+            });
 
-          setModal("상품이 장바구니에 추가되었습니다.");
-        } catch (err) {
-          console.log(err);
+            setModal("상품이 장바구니에 추가되었습니다.");
+            return duplicateCheck;
+          } catch (err) {
+            console.log(err);
+          }
+        } else {
+          try {
+            await setDoc(doc(cartRef, "items", data.productId), {
+              ...data,
+              count: 1,
+            });
+
+            setModal("상품이 장바구니에 추가되었습니다.");
+            return true;
+          } catch (err) {
+            console.log(err);
+            setModal("상품을 추가하지 못했습니다.");
+          }
         }
-      } else {
-        try {
-          await setDoc(doc(cartRef, "items", data.productId), {
-            ...data,
-            count: 1,
-          });
-
-          setModal("상품이 장바구니에 추가되었습니다.");
-        } catch (err) {
-          console.log(err);
-          setModal("상품을 추가하지 못했습니다.");
+      } catch (err) {
+        if (err instanceof FirebaseError) {
+          const notExistProductMessage =
+            "Function where() called with invalid data. Unsupported field value: undefined";
+          if (err.message === notExistProductMessage) {
+            setModal("삭제된 상품입니다.");
+          }
         }
       }
     },
@@ -77,7 +93,16 @@ const useCart = () => {
 
   const { mutate: addMutate } = useMutation({
     mutationFn: addCart,
-    onSuccess: () => {
+    onSuccess: (data, variables, _) => {
+      if (location.pathname === "/mypage" && data) {
+        const deleteConfirm = window.confirm(
+          "해당 상품을 장바구니에서 삭제하시겠습니까?"
+        );
+
+        if (deleteConfirm) {
+          deleteWishMutate(variables.productId);
+        }
+      }
       return queryClient.invalidateQueries({
         queryKey: [userInfo?.uid, "cart"],
         refetchType: "all",

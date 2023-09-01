@@ -3,13 +3,11 @@ import { CartData } from "../../types/cart";
 import { BsFillTrash3Fill } from "react-icons/bs";
 import { DocumentData } from "firebase/firestore";
 import { User } from "firebase/auth";
-import { Dispatch, SetStateAction } from "react";
 import useCart from "../../hooks/useCart";
 
 type Props = {
   cartData: DocumentData[];
   userInfo: User | null;
-  setNeedRefetch: Dispatch<SetStateAction<boolean>>;
 };
 
 const CartList = ({ cartData, userInfo }: Props) => {

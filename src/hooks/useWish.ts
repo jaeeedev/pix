@@ -3,6 +3,7 @@ import useGlobalModal from "../components/common/modal/useGlobalModal";
 import authAtom from "../recoil/auth/authAtom";
 import {
   collection,
+  deleteDoc,
   doc,
   getDocs,
   query,
@@ -11,13 +12,36 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase/initFirebase";
 import { TItem } from "../types/product";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useCallback } from "react";
 
 const useWish = () => {
   const queryClient = useQueryClient();
 
   const { isLogin, userInfo } = useRecoilValue(authAtom);
   const { setModal } = useGlobalModal();
+
+  const getWishList = useCallback(async () => {
+    if (!userInfo) return;
+
+    try {
+      const wishlistRef = collection(db, "wish", userInfo.uid, "items");
+      const response = await getDocs(wishlistRef);
+      return response;
+    } catch (err) {
+      console.log(err);
+      setModal("오류가 발생했습니다. 잠시 후 다시 실행해주세요.");
+    }
+  }, [userInfo]);
+
+  const { data: wishlist = [] } = useQuery({
+    queryFn: getWishList,
+    queryKey: [userInfo?.uid, "wishlist"],
+    select: (data) => {
+      return data?.docs.map((doc) => doc.data());
+    },
+    enabled: !!userInfo?.uid,
+  });
 
   const addWish = async (data: TItem) => {
     if (!userInfo || !isLogin) {
@@ -42,6 +66,7 @@ const useWish = () => {
         const response = await setDoc(doc(wishRef, "items", data.productId), {
           ...data,
         });
+
         setModal("상품이 위시리스트에 추가되었습니다.");
         return response;
       } catch (err) {
@@ -60,7 +85,29 @@ const useWish = () => {
       }),
   });
 
-  return { addWishMutate };
+  const deleteWishItem = useCallback(
+    async (id: string) => {
+      if (!userInfo) return;
+      try {
+        await deleteDoc(doc(db, "wish", userInfo.uid, "items", id));
+      } catch (err) {
+        console.log(err);
+        setModal("오류가 발생했습니다. 잠시 후 다시 실행해주세요.");
+        return;
+      }
+    },
+    [userInfo]
+  );
+
+  const { mutate: deleteWishMutate } = useMutation({
+    mutationFn: deleteWishItem,
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: [userInfo?.uid, "wishlist"],
+      }),
+  });
+
+  return { addWishMutate, deleteWishMutate, wishlist };
 };
 
 export default useWish;

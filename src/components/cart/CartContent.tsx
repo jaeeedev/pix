@@ -1,5 +1,5 @@
 import { DocumentData, collection, getDocs } from "firebase/firestore";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { useRecoilValue } from "recoil";
 
 import CartList from "./CartList";
@@ -11,7 +11,6 @@ import { useQuery } from "@tanstack/react-query";
 
 const CartContent = () => {
   const { userInfo, isLogin } = useRecoilValue(authAtom);
-  const [needRefetch, setNeedRefetch] = useState(false);
 
   const getData = useCallback(async () => {
     try {
@@ -42,10 +41,6 @@ const CartContent = () => {
     enabled: !!userInfo?.uid,
   });
 
-  useEffect(() => {
-    getData();
-  }, [getData, needRefetch]);
-
   if (!userInfo) return <div>로그인 후 사용할 수 있습니다.</div>;
 
   if (status === "loading" && fetchStatus === "fetching")
@@ -53,11 +48,7 @@ const CartContent = () => {
 
   return (
     <div className="flex flex-col gap-8 justify-between md:flex-row">
-      <CartList
-        cartData={data}
-        userInfo={userInfo}
-        setNeedRefetch={setNeedRefetch}
-      />
+      <CartList cartData={data} userInfo={userInfo} />
       <CartBill cartData={data as CartData[]} />
     </div>
   );
